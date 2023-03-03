@@ -20,9 +20,7 @@ using Lines2D = vector<Line2D>;
 
 EasyImage generate_image(const Configuration &conf)
 {
-    //string type = conf["General"]["type"];
-    //int width = conf["ImageProperties"]["width"];
-    //int height = conf["ImageProperties"]["height"];
+    string type = conf["General"]["type"].as_string_or_die();
 
     img::EasyImage image(525, 525);
 
