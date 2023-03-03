@@ -173,101 +173,101 @@ engine/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/build
 .PHONY : engine/fast
 
-LSystems.obj: LSystems.cc.obj
-.PHONY : LSystems.obj
+src/LSystems.obj: src/LSystems.cc.obj
+.PHONY : src/LSystems.obj
 
 # target to build an object file
-LSystems.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/LSystems.cc.obj
-.PHONY : LSystems.cc.obj
+src/LSystems.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.obj
+.PHONY : src/LSystems.cc.obj
 
-LSystems.i: LSystems.cc.i
-.PHONY : LSystems.i
+src/LSystems.i: src/LSystems.cc.i
+.PHONY : src/LSystems.i
 
 # target to preprocess a source file
-LSystems.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/LSystems.cc.i
-.PHONY : LSystems.cc.i
+src/LSystems.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.i
+.PHONY : src/LSystems.cc.i
 
-LSystems.s: LSystems.cc.s
-.PHONY : LSystems.s
+src/LSystems.s: src/LSystems.cc.s
+.PHONY : src/LSystems.s
 
 # target to generate assembly for a file
-LSystems.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/LSystems.cc.s
-.PHONY : LSystems.cc.s
+src/LSystems.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.s
+.PHONY : src/LSystems.cc.s
 
-easy_image.obj: easy_image.cc.obj
-.PHONY : easy_image.obj
+src/easy_image.obj: src/easy_image.cc.obj
+.PHONY : src/easy_image.obj
 
 # target to build an object file
-easy_image.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/easy_image.cc.obj
-.PHONY : easy_image.cc.obj
+src/easy_image.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.obj
+.PHONY : src/easy_image.cc.obj
 
-easy_image.i: easy_image.cc.i
-.PHONY : easy_image.i
+src/easy_image.i: src/easy_image.cc.i
+.PHONY : src/easy_image.i
 
 # target to preprocess a source file
-easy_image.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/easy_image.cc.i
-.PHONY : easy_image.cc.i
+src/easy_image.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.i
+.PHONY : src/easy_image.cc.i
 
-easy_image.s: easy_image.cc.s
-.PHONY : easy_image.s
+src/easy_image.s: src/easy_image.cc.s
+.PHONY : src/easy_image.s
 
 # target to generate assembly for a file
-easy_image.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/easy_image.cc.s
-.PHONY : easy_image.cc.s
+src/easy_image.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.s
+.PHONY : src/easy_image.cc.s
 
-engine.obj: engine.cc.obj
-.PHONY : engine.obj
+src/engine.obj: src/engine.cc.obj
+.PHONY : src/engine.obj
 
 # target to build an object file
-engine.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/engine.cc.obj
-.PHONY : engine.cc.obj
+src/engine.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/engine.cc.obj
+.PHONY : src/engine.cc.obj
 
-engine.i: engine.cc.i
-.PHONY : engine.i
+src/engine.i: src/engine.cc.i
+.PHONY : src/engine.i
 
 # target to preprocess a source file
-engine.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/engine.cc.i
-.PHONY : engine.cc.i
+src/engine.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/engine.cc.i
+.PHONY : src/engine.cc.i
 
-engine.s: engine.cc.s
-.PHONY : engine.s
+src/engine.s: src/engine.cc.s
+.PHONY : src/engine.s
 
 # target to generate assembly for a file
-engine.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/engine.cc.s
-.PHONY : engine.cc.s
+src/engine.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/engine.cc.s
+.PHONY : src/engine.cc.s
 
-ini_configuration.obj: ini_configuration.cc.obj
-.PHONY : ini_configuration.obj
+src/ini_configuration.obj: src/ini_configuration.cc.obj
+.PHONY : src/ini_configuration.obj
 
 # target to build an object file
-ini_configuration.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/ini_configuration.cc.obj
-.PHONY : ini_configuration.cc.obj
+src/ini_configuration.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.obj
+.PHONY : src/ini_configuration.cc.obj
 
-ini_configuration.i: ini_configuration.cc.i
-.PHONY : ini_configuration.i
+src/ini_configuration.i: src/ini_configuration.cc.i
+.PHONY : src/ini_configuration.i
 
 # target to preprocess a source file
-ini_configuration.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/ini_configuration.cc.i
-.PHONY : ini_configuration.cc.i
+src/ini_configuration.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.i
+.PHONY : src/ini_configuration.cc.i
 
-ini_configuration.s: ini_configuration.cc.s
-.PHONY : ini_configuration.s
+src/ini_configuration.s: src/ini_configuration.cc.s
+.PHONY : src/ini_configuration.s
 
 # target to generate assembly for a file
-ini_configuration.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/ini_configuration.cc.s
-.PHONY : ini_configuration.cc.s
+src/ini_configuration.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.s
+.PHONY : src/ini_configuration.cc.s
 
 # Help Target
 help:
@@ -282,18 +282,18 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... engine
-	@echo ... LSystems.obj
-	@echo ... LSystems.i
-	@echo ... LSystems.s
-	@echo ... easy_image.obj
-	@echo ... easy_image.i
-	@echo ... easy_image.s
-	@echo ... engine.obj
-	@echo ... engine.i
-	@echo ... engine.s
-	@echo ... ini_configuration.obj
-	@echo ... ini_configuration.i
-	@echo ... ini_configuration.s
+	@echo ... src/LSystems.obj
+	@echo ... src/LSystems.i
+	@echo ... src/LSystems.s
+	@echo ... src/easy_image.obj
+	@echo ... src/easy_image.i
+	@echo ... src/easy_image.s
+	@echo ... src/engine.obj
+	@echo ... src/engine.i
+	@echo ... src/engine.s
+	@echo ... src/ini_configuration.obj
+	@echo ... src/ini_configuration.i
+	@echo ... src/ini_configuration.s
 .PHONY : help
 
 

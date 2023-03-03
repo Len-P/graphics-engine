@@ -124,30 +124,30 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "easy_image.cc",
+			"path" : "src/easy_image.cc",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "engine.cc",
+			"path" : "src/engine.cc",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "ini_configuration.cc",
+			"path" : "src/ini_configuration.cc",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "LSystems.cc",
+			"path" : "src/LSystems.cc",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "LSystems.h",
+			"path" : "src/LSystems.h",
 			"sourceGroupIndex" : 1
 		}
 	],
