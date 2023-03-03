@@ -173,53 +173,29 @@ engine/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/build
 .PHONY : engine/fast
 
-src/LSystems.obj: src/LSystems.cc.obj
-.PHONY : src/LSystems.obj
+src/LSystems/LSystems.obj: src/LSystems/LSystems.cc.obj
+.PHONY : src/LSystems/LSystems.obj
 
 # target to build an object file
-src/LSystems.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.obj
-.PHONY : src/LSystems.cc.obj
+src/LSystems/LSystems.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj
+.PHONY : src/LSystems/LSystems.cc.obj
 
-src/LSystems.i: src/LSystems.cc.i
-.PHONY : src/LSystems.i
-
-# target to preprocess a source file
-src/LSystems.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.i
-.PHONY : src/LSystems.cc.i
-
-src/LSystems.s: src/LSystems.cc.s
-.PHONY : src/LSystems.s
-
-# target to generate assembly for a file
-src/LSystems.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems.cc.s
-.PHONY : src/LSystems.cc.s
-
-src/easy_image.obj: src/easy_image.cc.obj
-.PHONY : src/easy_image.obj
-
-# target to build an object file
-src/easy_image.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.obj
-.PHONY : src/easy_image.cc.obj
-
-src/easy_image.i: src/easy_image.cc.i
-.PHONY : src/easy_image.i
+src/LSystems/LSystems.i: src/LSystems/LSystems.cc.i
+.PHONY : src/LSystems/LSystems.i
 
 # target to preprocess a source file
-src/easy_image.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.i
-.PHONY : src/easy_image.cc.i
+src/LSystems/LSystems.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems/LSystems.cc.i
+.PHONY : src/LSystems/LSystems.cc.i
 
-src/easy_image.s: src/easy_image.cc.s
-.PHONY : src/easy_image.s
+src/LSystems/LSystems.s: src/LSystems/LSystems.cc.s
+.PHONY : src/LSystems/LSystems.s
 
 # target to generate assembly for a file
-src/easy_image.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/easy_image.cc.s
-.PHONY : src/easy_image.cc.s
+src/LSystems/LSystems.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/LSystems/LSystems.cc.s
+.PHONY : src/LSystems/LSystems.cc.s
 
 src/engine.obj: src/engine.cc.obj
 .PHONY : src/engine.obj
@@ -245,29 +221,77 @@ src/engine.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/engine.cc.s
 .PHONY : src/engine.cc.s
 
-src/ini_configuration.obj: src/ini_configuration.cc.obj
-.PHONY : src/ini_configuration.obj
+src/utils/draw2DLines.obj: src/utils/draw2DLines.cc.obj
+.PHONY : src/utils/draw2DLines.obj
 
 # target to build an object file
-src/ini_configuration.cc.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.obj
-.PHONY : src/ini_configuration.cc.obj
+src/utils/draw2DLines.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj
+.PHONY : src/utils/draw2DLines.cc.obj
 
-src/ini_configuration.i: src/ini_configuration.cc.i
-.PHONY : src/ini_configuration.i
+src/utils/draw2DLines.i: src/utils/draw2DLines.cc.i
+.PHONY : src/utils/draw2DLines.i
 
 # target to preprocess a source file
-src/ini_configuration.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.i
-.PHONY : src/ini_configuration.cc.i
+src/utils/draw2DLines.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/draw2DLines.cc.i
+.PHONY : src/utils/draw2DLines.cc.i
 
-src/ini_configuration.s: src/ini_configuration.cc.s
-.PHONY : src/ini_configuration.s
+src/utils/draw2DLines.s: src/utils/draw2DLines.cc.s
+.PHONY : src/utils/draw2DLines.s
 
 # target to generate assembly for a file
-src/ini_configuration.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/ini_configuration.cc.s
-.PHONY : src/ini_configuration.cc.s
+src/utils/draw2DLines.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/draw2DLines.cc.s
+.PHONY : src/utils/draw2DLines.cc.s
+
+src/utils/easy_image.obj: src/utils/easy_image.cc.obj
+.PHONY : src/utils/easy_image.obj
+
+# target to build an object file
+src/utils/easy_image.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/easy_image.cc.obj
+.PHONY : src/utils/easy_image.cc.obj
+
+src/utils/easy_image.i: src/utils/easy_image.cc.i
+.PHONY : src/utils/easy_image.i
+
+# target to preprocess a source file
+src/utils/easy_image.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/easy_image.cc.i
+.PHONY : src/utils/easy_image.cc.i
+
+src/utils/easy_image.s: src/utils/easy_image.cc.s
+.PHONY : src/utils/easy_image.s
+
+# target to generate assembly for a file
+src/utils/easy_image.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/easy_image.cc.s
+.PHONY : src/utils/easy_image.cc.s
+
+src/utils/ini_configuration.obj: src/utils/ini_configuration.cc.obj
+.PHONY : src/utils/ini_configuration.obj
+
+# target to build an object file
+src/utils/ini_configuration.cc.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/ini_configuration.cc.obj
+.PHONY : src/utils/ini_configuration.cc.obj
+
+src/utils/ini_configuration.i: src/utils/ini_configuration.cc.i
+.PHONY : src/utils/ini_configuration.i
+
+# target to preprocess a source file
+src/utils/ini_configuration.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/ini_configuration.cc.i
+.PHONY : src/utils/ini_configuration.cc.i
+
+src/utils/ini_configuration.s: src/utils/ini_configuration.cc.s
+.PHONY : src/utils/ini_configuration.s
+
+# target to generate assembly for a file
+src/utils/ini_configuration.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\engine.dir\build.make CMakeFiles/engine.dir/src/utils/ini_configuration.cc.s
+.PHONY : src/utils/ini_configuration.cc.s
 
 # Help Target
 help:
@@ -282,18 +306,21 @@ help:
 	@echo ... list_install_components
 	@echo ... rebuild_cache
 	@echo ... engine
-	@echo ... src/LSystems.obj
-	@echo ... src/LSystems.i
-	@echo ... src/LSystems.s
-	@echo ... src/easy_image.obj
-	@echo ... src/easy_image.i
-	@echo ... src/easy_image.s
+	@echo ... src/LSystems/LSystems.obj
+	@echo ... src/LSystems/LSystems.i
+	@echo ... src/LSystems/LSystems.s
 	@echo ... src/engine.obj
 	@echo ... src/engine.i
 	@echo ... src/engine.s
-	@echo ... src/ini_configuration.obj
-	@echo ... src/ini_configuration.i
-	@echo ... src/ini_configuration.s
+	@echo ... src/utils/draw2DLines.obj
+	@echo ... src/utils/draw2DLines.i
+	@echo ... src/utils/draw2DLines.s
+	@echo ... src/utils/easy_image.obj
+	@echo ... src/utils/easy_image.i
+	@echo ... src/utils/easy_image.s
+	@echo ... src/utils/ini_configuration.obj
+	@echo ... src/utils/ini_configuration.i
+	@echo ... src/utils/ini_configuration.s
 .PHONY : help
 
 

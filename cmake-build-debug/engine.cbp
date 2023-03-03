@@ -122,25 +122,31 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems.cc">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystems.cc">
 			<Option target="engine"/>
 		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems.h">
-			<Option target="engine"/>
-		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/easy_image.cc">
-			<Option target="engine"/>
-		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/easy_image.h">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystems.h">
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/engine.cc">
 			<Option target="engine"/>
 		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/ini_configuration.cc">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/draw2DLines.cc">
 			<Option target="engine"/>
 		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/ini_configuration.h">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/draw2DLines.h">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/easy_image.cc">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/easy_image.h">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/ini_configuration.cc">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/ini_configuration.h">
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/CMakeLists.txt">

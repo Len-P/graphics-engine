@@ -1,8 +1,5 @@
-//
-// Created by LenP on 24/02/2023.
-//
-
 #include "LSystems.h"
+
 
 
 //Point constructor

@@ -1,15 +1,20 @@
-//
-// Created by LenP on 24/02/2023.
-//
-
 #ifndef ENGINE_LSYSTEMS_H
 #define ENGINE_LSYSTEMS_H
 
 #include "../utils/easy_image.h"
 
+
+
 using namespace std;
 
 namespace lsys {
+
+    class parseIni {
+    public:
+        string type;
+        int size;
+
+    };
 
     class Point2D {
     public:
@@ -30,13 +35,10 @@ namespace lsys {
         Line2D(Point2D &aP1, Point2D &aP2, const img::Color& aColor);
     };
 
-    class parseIni {
-    public:
-        string type;
-        int width;
-        int height;
-    };
 
-} // lsys
+
+
+
+}
 
 #endif //ENGINE_LSYSTEMS_H

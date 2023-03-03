@@ -5,56 +5,40 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <cmath>
 
 #include "lsystems/LSystems.h"
-#include <list>
+#include "utils/draw2DLines.h"
+
+
 
 using namespace std;
+using namespace ini;
 using namespace img;
 using namespace lsys;
 
-using Lines2D = list<Line2D>;
-img::EasyImage draw2DLines(const Lines2D &lines, const int size)
-{
-    // Calculate extrema
-    double x_min = INFINITY;
-    double y_min = INFINITY;
-    double x_max = -INFINITY;
-    double y_max = -INFINITY;
+using Lines2D = vector<Line2D>;
 
-    for (const auto& line : lines) { // Iterate over all lines and update min and max values
-        x_min = min(x_min, min(line.p1.x, line.p2.x));
-        y_min = min(y_min, min(line.p1.y, line.p2.y));
-        x_max = max(x_max, max(line.p1.x, line.p2.x));
-        y_max = max(y_max, max(line.p1.y, line.p2.y));
-    }
-
-    return img::EasyImage();
-};
-
-
-img::EasyImage generate_image(const ini::Configuration &conf)
+EasyImage generate_image(const Configuration &conf)
 {
     //string type = conf["General"]["type"];
     //int width = conf["ImageProperties"]["width"];
     //int height = conf["ImageProperties"]["height"];
 
-    img::EasyImage image(500, 500);
+    img::EasyImage image(525, 525);
 
-    Point2D point1(1, 5);
-    Point2D point2(2, 2);
-    Point2D point3(4, 7);
-    Point2D point4(8, 1);
+    Point2D point1(0, 0);
+    Point2D point2(500, 500);
+    Point2D point3(500.2, 500);
+    Point2D point4(125, 350.2);
 
 
     Line2D line1(point1, point2, Color());
     Line2D line2(point3, point4, Color());
 
-    Lines2D linelist = {line1, line2};
+    Lines2D lines = {line1, line2};
 
+    return draw2DLines(lines, 1000, Color(255,255,255)) ;
 
-    return image;
 }
 
 

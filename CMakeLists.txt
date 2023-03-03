@@ -18,7 +18,7 @@ set(engine_sources
 		src/utils/easy_image.cc
 		src/engine.cc
 		src/utils/ini_configuration.cc
-		src/LSystems/LSystems.cc src/LSystems/LSystems.h)
+		src/LSystems/LSystems.cc src/LSystems/LSystems.h src/utils/draw2DLines.cc src/utils/draw2DLines.h)
 
 ############################################################
 # Create an executable
