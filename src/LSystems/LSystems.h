@@ -5,7 +5,7 @@
 #ifndef ENGINE_LSYSTEMS_H
 #define ENGINE_LSYSTEMS_H
 
-#include "easy_image.h"
+#include "../utils/easy_image.h"
 
 using namespace std;
 

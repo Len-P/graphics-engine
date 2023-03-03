@@ -15,10 +15,10 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OWN_GXX_FLAGS}")
 # List all sources
 ############################################################
 set(engine_sources
-		src/easy_image.cc
+		src/utils/easy_image.cc
 		src/engine.cc
-		src/ini_configuration.cc
-		src/LSystems.cc src/LSystems.h)
+		src/utils/ini_configuration.cc
+		src/LSystems/LSystems.cc src/LSystems/LSystems.h)
 
 ############################################################
 # Create an executable

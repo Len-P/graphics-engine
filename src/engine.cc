@@ -1,5 +1,5 @@
-#include "easy_image.h"
-#include "ini_configuration.h"
+#include "utils/easy_image.h"
+#include "utils/ini_configuration.h"
 
 #include <fstream>
 #include <iostream>
@@ -7,7 +7,7 @@
 #include <string>
 #include <cmath>
 
-#include "LSystems.h"
+#include "lsystems/LSystems.h"
 #include <list>
 
 using namespace std;
