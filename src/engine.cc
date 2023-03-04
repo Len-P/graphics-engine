@@ -6,15 +6,15 @@
 #include <stdexcept>
 #include <string>
 
-#include "lsystems/LSystems.h"
-#include "utils/draw2DLines.h"
+#include "LSystems/LSystem2D.h"
+#include "LSystems/draw2DLines.h"
 
 
 
 using namespace std;
 using namespace ini;
 using namespace img;
-using namespace lsys;
+using namespace LSystem2D;
 
 using Lines2D = vector<Line2D>;
 
@@ -22,20 +22,10 @@ EasyImage generate_image(const Configuration &conf)
 {
     string type = conf["General"]["type"].as_string_or_die();
 
-    img::EasyImage image(525, 525);
-
-    Point2D point1(0, 0);
-    Point2D point2(500, 500);
-    Point2D point3(500.2, 500);
-    Point2D point4(125, 350.2);
-
-
-    Line2D line1(point1, point2, Color());
-    Line2D line2(point3, point4, Color());
-
-    Lines2D lines = {line1, line2};
-
-    return draw2DLines(lines, 1000, Color(255,255,255)) ;
+    if (type == "2DLSystem")
+    {
+        return parseIniLSystem2D(conf);
+    }
 
 }
 

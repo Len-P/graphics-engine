@@ -18,7 +18,8 @@ set(engine_sources
 		src/utils/easy_image.cc
 		src/engine.cc
 		src/utils/ini_configuration.cc
-		src/LSystems/LSystems.cc src/LSystems/LSystems.h src/utils/draw2DLines.cc src/utils/draw2DLines.h)
+		src/utils/l_parser.cc src/utils/l_parser.h
+		src/LSystems/LSystem2D.cc src/LSystems/LSystem2D.h src/LSystems/draw2DLines.cc src/LSystems/draw2DLines.h src/LSystems/LSystem2Lines2D.cc src/LSystems/LSystem2Lines2D.h)
 
 ############################################################
 # Create an executable

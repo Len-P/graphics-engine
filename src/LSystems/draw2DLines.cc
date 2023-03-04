@@ -1,5 +1,5 @@
 #include "draw2DLines.h"
-#include "easy_image.h"
+#include "../utils/easy_image.h"
 #include <list>
 #include <cmath>
 
@@ -7,7 +7,7 @@
 
 using namespace std;
 using namespace img;
-using namespace lsys;
+using namespace LSystem2D;
 
 img::EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgroundColor)
 {
@@ -29,8 +29,8 @@ img::EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgrou
     // Calculate image resolution
     double x_range = x_max - x_min;
     double y_range = y_max - y_min;
-    int image_x = lround(size * (x_range / max(x_range, y_range)));
-    int image_y = lround(size * (y_range / max(x_range, y_range)));
+    double image_x = size * (x_range / max(x_range, y_range));
+    double image_y = size * (y_range / max(x_range, y_range));
 
     // Calculate scale factor d
     double d = 0.95 * (image_x /  x_range);
@@ -55,7 +55,7 @@ img::EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgrou
         line.p2.y += dy;
     }
 
-    EasyImage image(image_x, image_y, backgroundColor);
+    EasyImage image(lround(image_x), lround(image_y), backgroundColor);
 
     for (const auto &line : lines)
     {

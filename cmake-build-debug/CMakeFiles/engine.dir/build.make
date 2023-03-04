@@ -110,41 +110,71 @@ CMakeFiles/engine.dir/src/utils/ini_configuration.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/utils/ini_configuration.cc.s"
 	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\ini_configuration.cc" -o CMakeFiles\engine.dir\src\utils\ini_configuration.cc.s
 
-CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj: CMakeFiles/engine.dir/flags.make
-CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/LSystems/LSystems.cc
-CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj -MF CMakeFiles\engine.dir\src\LSystems\LSystems.cc.obj.d -o CMakeFiles\engine.dir\src\LSystems\LSystems.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystems.cc"
+CMakeFiles/engine.dir/src/utils/l_parser.cc.obj: CMakeFiles/engine.dir/flags.make
+CMakeFiles/engine.dir/src/utils/l_parser.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/utils/l_parser.cc
+CMakeFiles/engine.dir/src/utils/l_parser.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/engine.dir/src/utils/l_parser.cc.obj"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/utils/l_parser.cc.obj -MF CMakeFiles\engine.dir\src\utils\l_parser.cc.obj.d -o CMakeFiles\engine.dir\src\utils\l_parser.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\l_parser.cc"
 
-CMakeFiles/engine.dir/src/LSystems/LSystems.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/LSystems/LSystems.cc.i"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystems.cc" > CMakeFiles\engine.dir\src\LSystems\LSystems.cc.i
+CMakeFiles/engine.dir/src/utils/l_parser.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/utils/l_parser.cc.i"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\l_parser.cc" > CMakeFiles\engine.dir\src\utils\l_parser.cc.i
 
-CMakeFiles/engine.dir/src/LSystems/LSystems.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/LSystems/LSystems.cc.s"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystems.cc" -o CMakeFiles\engine.dir\src\LSystems\LSystems.cc.s
+CMakeFiles/engine.dir/src/utils/l_parser.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/utils/l_parser.cc.s"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\l_parser.cc" -o CMakeFiles\engine.dir\src\utils\l_parser.cc.s
 
-CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj: CMakeFiles/engine.dir/flags.make
-CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/utils/draw2DLines.cc
-CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj -MF CMakeFiles\engine.dir\src\utils\draw2DLines.cc.obj.d -o CMakeFiles\engine.dir\src\utils\draw2DLines.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\draw2DLines.cc"
+CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj: CMakeFiles/engine.dir/flags.make
+CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/LSystems/LSystem2D.cc
+CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj -MF CMakeFiles\engine.dir\src\LSystems\LSystem2D.cc.obj.d -o CMakeFiles\engine.dir\src\LSystems\LSystem2D.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2D.cc"
 
-CMakeFiles/engine.dir/src/utils/draw2DLines.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/utils/draw2DLines.cc.i"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\draw2DLines.cc" > CMakeFiles\engine.dir\src\utils\draw2DLines.cc.i
+CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.i"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2D.cc" > CMakeFiles\engine.dir\src\LSystems\LSystem2D.cc.i
 
-CMakeFiles/engine.dir/src/utils/draw2DLines.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/utils/draw2DLines.cc.s"
-	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\utils\draw2DLines.cc" -o CMakeFiles\engine.dir\src\utils\draw2DLines.cc.s
+CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.s"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2D.cc" -o CMakeFiles\engine.dir\src\LSystems\LSystem2D.cc.s
+
+CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj: CMakeFiles/engine.dir/flags.make
+CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/LSystems/draw2DLines.cc
+CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj -MF CMakeFiles\engine.dir\src\LSystems\draw2DLines.cc.obj.d -o CMakeFiles\engine.dir\src\LSystems\draw2DLines.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\draw2DLines.cc"
+
+CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.i"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\draw2DLines.cc" > CMakeFiles\engine.dir\src\LSystems\draw2DLines.cc.i
+
+CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.s"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\draw2DLines.cc" -o CMakeFiles\engine.dir\src\LSystems\draw2DLines.cc.s
+
+CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj: CMakeFiles/engine.dir/flags.make
+CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj: D:/Documents/School/Computer\ Graphics/graphics-engine/src/LSystems/LSystem2Lines2D.cc
+CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj: CMakeFiles/engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj -MF CMakeFiles\engine.dir\src\LSystems\LSystem2Lines2D.cc.obj.d -o CMakeFiles\engine.dir\src\LSystems\LSystem2Lines2D.cc.obj -c "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2Lines2D.cc"
+
+CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.i"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2Lines2D.cc" > CMakeFiles\engine.dir\src\LSystems\LSystem2Lines2D.cc.i
+
+CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.s"
+	"D:\Program Files\JetBrains\CLion 2022.3.2\bin\mingw\bin\g++.exe" $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "D:\Documents\School\Computer Graphics\graphics-engine\src\LSystems\LSystem2Lines2D.cc" -o CMakeFiles\engine.dir\src\LSystems\LSystem2Lines2D.cc.s
 
 # Object files for target engine
 engine_OBJECTS = \
 "CMakeFiles/engine.dir/src/utils/easy_image.cc.obj" \
 "CMakeFiles/engine.dir/src/engine.cc.obj" \
 "CMakeFiles/engine.dir/src/utils/ini_configuration.cc.obj" \
-"CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj" \
-"CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj"
+"CMakeFiles/engine.dir/src/utils/l_parser.cc.obj" \
+"CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj" \
+"CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj" \
+"CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj"
 
 # External object files for target engine
 engine_EXTERNAL_OBJECTS =
@@ -152,13 +182,15 @@ engine_EXTERNAL_OBJECTS =
 engine.exe: CMakeFiles/engine.dir/src/utils/easy_image.cc.obj
 engine.exe: CMakeFiles/engine.dir/src/engine.cc.obj
 engine.exe: CMakeFiles/engine.dir/src/utils/ini_configuration.cc.obj
-engine.exe: CMakeFiles/engine.dir/src/LSystems/LSystems.cc.obj
-engine.exe: CMakeFiles/engine.dir/src/utils/draw2DLines.cc.obj
+engine.exe: CMakeFiles/engine.dir/src/utils/l_parser.cc.obj
+engine.exe: CMakeFiles/engine.dir/src/LSystems/LSystem2D.cc.obj
+engine.exe: CMakeFiles/engine.dir/src/LSystems/draw2DLines.cc.obj
+engine.exe: CMakeFiles/engine.dir/src/LSystems/LSystem2Lines2D.cc.obj
 engine.exe: CMakeFiles/engine.dir/build.make
 engine.exe: CMakeFiles/engine.dir/linklibs.rsp
 engine.exe: CMakeFiles/engine.dir/objects1.rsp
 engine.exe: CMakeFiles/engine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable engine.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="D:\Documents\School\Computer Graphics\graphics-engine\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable engine.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\engine.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

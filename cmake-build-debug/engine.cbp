@@ -122,19 +122,25 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystems.cc">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystem2D.cc">
 			<Option target="engine"/>
 		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystems.h">
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystem2D.h">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystem2Lines2D.cc">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/LSystem2Lines2D.h">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/draw2DLines.cc">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/LSystems/draw2DLines.h">
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/engine.cc">
-			<Option target="engine"/>
-		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/draw2DLines.cc">
-			<Option target="engine"/>
-		</Unit>
-		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/draw2DLines.h">
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/easy_image.cc">
@@ -147,6 +153,12 @@
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/ini_configuration.h">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/l_parser.cc">
+			<Option target="engine"/>
+		</Unit>
+		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/src/utils/l_parser.h">
 			<Option target="engine"/>
 		</Unit>
 		<Unit filename="D:/Documents/School/Computer Graphics/graphics-engine/CMakeLists.txt">

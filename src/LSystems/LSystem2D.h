@@ -1,5 +1,5 @@
-#ifndef ENGINE_LSYSTEMS_H
-#define ENGINE_LSYSTEMS_H
+#ifndef ENGINE_LSYSTEM2D_H
+#define ENGINE_LSYSTEM2D_H
 
 #include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
@@ -10,17 +10,7 @@ using namespace std;
 using namespace ini;
 using namespace img;
 
-namespace lsys {
-
-    class parseIni {
-    public:
-        int size;
-        Color backgroundColor;
-        string inputFile;
-        Color color;
-
-        parseIni(const Configuration &conf);
-    };
+namespace LSystem2D {
 
     class Point2D {
     public:
@@ -41,10 +31,9 @@ namespace lsys {
         Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor);
     };
 
-
-
-
-
 }
 
-#endif //ENGINE_LSYSTEMS_H
+// Parse config ini file
+EasyImage parseIniLSystem2D(const Configuration &conf);
+
+#endif //ENGINE_LSYSTEM2D_H

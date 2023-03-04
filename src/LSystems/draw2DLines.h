@@ -1,11 +1,10 @@
-#include "easy_image.h"
-#include <list>
-#include "../LSystems/LSystems.h"
+#include "../utils/easy_image.h"
+#include "LSystem2D.h"
 
 
 
 using namespace img;
-using namespace lsys;
+using namespace LSystem2D;
 
 using Lines2D = vector<Line2D>;
 
