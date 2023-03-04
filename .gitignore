@@ -1,6 +1,7 @@
 # Ignore .bmp files and .idea folder
 *.bmp
 .idea/
+.cmake-build-debug/
 
 # Prerequisites
 *.d
