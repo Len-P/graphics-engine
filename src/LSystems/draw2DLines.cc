@@ -1,6 +1,5 @@
 #include "draw2DLines.h"
 #include "../utils/easy_image.h"
-#include <list>
 #include <cmath>
 
 
@@ -9,9 +8,8 @@ using namespace std;
 using namespace img;
 using namespace LSystem2D;
 
-img::EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgroundColor)
+EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgroundColor)
 {
-    // Calculate extrema
     double x_min = INFINITY;
     double y_min = INFINITY;
     double x_max = -INFINITY;
@@ -55,8 +53,10 @@ img::EasyImage draw2DLines(Lines2D &lines, const int size, const Color &backgrou
         line.p2.y += dy;
     }
 
+    // Create image object
     EasyImage image(lround(image_x), lround(image_y), backgroundColor);
 
+    // Draw all lines on the image
     for (const auto &line : lines)
     {
         unsigned int x0 = lround(line.p1.x);
