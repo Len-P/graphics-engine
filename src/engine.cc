@@ -6,8 +6,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "LSystems/LSystem2D.h"
-#include "LSystems/draw2DLines.h"
+#include "LSystem2D/LSystem2D.h"
+#include "LSystem2D/draw2DLines.h"
 
 
 
