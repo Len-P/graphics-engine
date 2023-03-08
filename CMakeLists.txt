@@ -20,7 +20,7 @@ set(engine_sources
 		src/utils/ini_configuration.cc
 		src/utils/l_parser.cc src/utils/l_parser.h
 		src/LSystem2D/LSystem2D.cc src/LSystem2D/LSystem2D.h src/LSystem2D/draw2DLines.cc src/LSystem2D/draw2DLines.h src/LSystem2D/LSystem2Lines2D.cc src/LSystem2D/LSystem2Lines2D.h
-		src/LineDrawings3D/Figure3D.cc src/LineDrawings3D/Figure3D.h src/utils/vector3d.cc src/utils/vector3d.h)
+		src/LineDrawings3D/Figure3D.cc src/LineDrawings3D/Figure3D.h src/utils/vector3d.cc src/utils/vector3d.h src/LineDrawings3D/Transform.cc src/LineDrawings3D/Transform.h)
 
 ############################################################
 # Create an executable
