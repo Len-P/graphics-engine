@@ -1,9 +1,4 @@
 #include "LSystem2D.h"
-#include <cmath>
-#include "../utils/l_parser.h"
-#include <fstream>
-#include "LSystem2Lines2D.h"
-#include "draw2DLines.h"
 
 
 
@@ -27,7 +22,7 @@ EasyImage parseIniLSystem2D(const Configuration &conf)
     input_stream.close();
 
     // Get vector with lines from LSystem and then draw lines and return image
-    Lines2D lines = LSystem2Lines2D(l_system, color);
+    LSystem2D::Line2D lines = LSystem2Lines2D(l_system, color);
     return draw2DLines(lines, size, backgroundColor);
 }
 

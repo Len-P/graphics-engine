@@ -1,7 +1,8 @@
+#define _USE_MATH_DEFINES
 #include "LSystem2D.h"
 #include "../utils/l_parser.h"
 #include <stack>
-
+#include <cmath>
 
 
 using namespace img;

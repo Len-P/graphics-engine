@@ -1,8 +1,4 @@
-#define _USE_MATH_DEFINES
 #include "LSystem2Lines2D.h"
-#include "../utils/l_parser.h"
-#include <cmath>
-#include <stack>
 
 
 using namespace std;

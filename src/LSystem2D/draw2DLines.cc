@@ -1,6 +1,4 @@
 #include "draw2DLines.h"
-#include "../utils/easy_image.h"
-#include <cmath>
 
 
 

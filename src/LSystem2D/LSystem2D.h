@@ -3,6 +3,11 @@
 
 #include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
+#include "../utils/l_parser.h"
+#include <cmath>
+#include <fstream>
+#include "LSystem2Lines2D.h"
+#include "draw2DLines.h"
 
 
 
