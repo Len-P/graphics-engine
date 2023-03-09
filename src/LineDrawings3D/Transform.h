@@ -25,7 +25,7 @@ Matrix eyePointTrans(const Vector3D &eyepoint);
 void applyTransformation(Figure &fig, const Matrix &mat);
 void applyTransformation(Figures3D &figs, const Matrix &mat);
 
-Point2D doProjection(const Vector3D &point, const double d);
-Lines2D doProjection(const Figures3D &figs);
+Point2D doProjection(const Vector3D &eyeTransformedPoint, const double d);
+Lines2D doProjection(const Figures3D &eyeTransformedFigures);
 
 #endif //ENGINE_TRANSFORM_H

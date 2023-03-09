@@ -108,14 +108,49 @@ void applyTransformation(Figures3D &figs, const Matrix &mat)
     }
 }
 
-Point2D doProjection(const Vector3D &point, const double d)
+Point2D doProjection(const Vector3D &eyeTransformedPoint, const double d)
 {
-
+    return {-d * eyeTransformedPoint.x / eyeTransformedPoint.z, -d * eyeTransformedPoint.y / eyeTransformedPoint.z};
 }
 
-Lines2D doProjection(const Figures3D &figs)
+Lines2D doProjection(const Figures3D &eyeTransformedFigures)
 {
+    Lines2D lines;
 
+    for (const auto &fig : eyeTransformedFigures)
+    {
+        vector<Point2D> points2DVector;
+
+        // Get vector of Point2D objects instead of Vector3D objects
+        for (const auto &point: fig.points)
+        {
+            points2DVector.emplace_back(doProjection(point, 1));
+        }
+
+        // Fill list of lines with indexes from the faces
+        // Indexes are used to select points from points2DVector to create lines with
+        for (const auto &face : fig.faces) {
+            // First, create the line between the first and last points
+            int numPoints = face.point_indexes.size();
+
+            Point2D startPoint = points2DVector[face.point_indexes[numPoints - 1]];
+            Point2D endPoint = points2DVector[face.point_indexes[0]];
+
+            lines.emplace_back(startPoint, endPoint, fig.color);
+
+            // Create all other lines
+            if (numPoints > 2)
+            {
+                for (int i = 1; i < numPoints - 1; i++) {
+                    startPoint = endPoint;
+                    endPoint = points2DVector[face.point_indexes[i]];
+                    lines.emplace_back(startPoint, endPoint, fig.color);
+                }
+            }
+        }
+    }
+
+    return lines;
 }
 
 
