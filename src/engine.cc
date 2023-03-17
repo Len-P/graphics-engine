@@ -7,7 +7,7 @@
 #include <string>
 
 #include "LSystem2D/LSystem2D.h"
-#include "LSystem2D/draw2DLines.h"
+#include "LineDrawings3D/Figure3D.h"
 
 
 
@@ -15,8 +15,7 @@ using namespace std;
 using namespace ini;
 using namespace img;
 using namespace LSystem2D;
-
-using Lines2D = vector<Line2D>;
+using namespace Figure3D;
 
 EasyImage generate_image(const Configuration &conf)
 {
@@ -26,9 +25,12 @@ EasyImage generate_image(const Configuration &conf)
     {
         return parseIniLSystem2D(conf);
     }
+    else if (type == "Wireframe")
+    {
+        return parseIniFigure3D(conf);
+    }
 
 }
-
 
 int main(int argc, char const* argv[])
 {
