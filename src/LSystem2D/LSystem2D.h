@@ -17,6 +17,9 @@ using namespace img;
 
 namespace LSystem2D {
 
+    // Parse config ini file
+    EasyImage parseIniLSystem2D(const Configuration &conf);
+
     class Point2D {
     public:
         double x;
@@ -40,15 +43,12 @@ namespace LSystem2D {
 
         //Line constructor
         Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor);
+
+        // Draws all lines from a list of lines on an image. Returns image. Image parameters are size and background color.
+        static EasyImage draw2DLines(vector<Line2D> lines, int size, const Color &backgroundColor);
     };
 
     using Lines2D = vector<Line2D>;
-
-    // Parse config ini file
-    EasyImage parseIniLSystem2D(const Configuration &conf);
-
-    // Draws all lines from a list of lines on an image. Returns image. Image parameters are size and background color.
-    EasyImage draw2DLines(vector<Line2D> lines, int size, const Color &backgroundColor);
 
     // Used in LSystem2Lines2D() for recursively generating the vector of lines that gets returned by LSystem2Lines2D()
     void recursiveLSystem(const string &str, unsigned int iter, unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, Point2D &startPoint, Point2D &endPoint, stack<tuple<Point2D, double>> &stack, const Color &color);

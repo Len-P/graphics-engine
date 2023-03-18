@@ -18,6 +18,9 @@ using namespace LSystem2D;
 
 namespace Figure3D {
 
+    // Parse config ini file
+    EasyImage parseIniWireframe(const Configuration &conf);
+
     class Face {
     public:
         vector<int> pointIndexes; // Indexes refer to points in the points vector in the Figure class
@@ -32,17 +35,27 @@ namespace Figure3D {
         vector<Face> faces;
         Color color;
 
-        // Figure constructor
+        // Figure constructors
+        Figure();
         Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, const Color &aColor);
 
         // Apply transformation matrix to figure
         void applyTransformation(const Matrix &mat);
+
+        // ============== Static Methods ============== //
+        static Figure createCube(const Color &color);
+        static Figure createTetrahedron(const Color &color);
+        static Figure createOctahedron(const Color &color);
+        static Figure createIcosahedron(const Color &color);
+        static Figure createDodecahedron(const Color &color);
+        static Figure createSphere(const double r, const int n, const Color &color);
+        static Figure createCone(const double h, const int n, const Color &color);
+        static Figure createCilinder(const double h, const int n, const Color &color);
+        static Figure createTorus(const double r, const double R, const int n, const int m, const Color &color);
+        // ============================================ //
     };
 
     typedef list<Figure> Figures3D;
-
-    // Parse config ini file
-    EasyImage parseIniFigure3D(const Configuration &conf);
 
     // ============== Transformations ============== //
     void toPolar(const Vector3D &point, double &r, double &theta, double &phi);

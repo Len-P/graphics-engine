@@ -7,7 +7,7 @@
 #include <string>
 
 #include "LSystem2D/LSystem2D.h"
-#include "LineDrawings3D/Figure3D.h"
+#include "Wireframe/Figure3D.h"
 
 
 
@@ -27,7 +27,7 @@ EasyImage generate_image(const Configuration &conf)
     }
     else if (type == "Wireframe")
     {
-        return parseIniFigure3D(conf);
+        return parseIniWireframe(conf);
     }
 
 }

@@ -2,20 +2,7 @@
 
 
 
-LSystem2D::Point2D::Point2D(double aX, double aY)
-{
-    x = aX;
-    y = aY;
-}
-
-// Line constructor
-LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor)
-{
-    p1 = aP1;
-    p2 = aP2;
-    color = aColor;
-}
-
+// ========================================== Parse Ini ========================================== //
 EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
 {
     // Parsing ini file
@@ -37,10 +24,25 @@ EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
 
     // Get vector with lines from LSystem and then draw lines and return image
     Lines2D lines = LSystem2Lines2D(l_system, color);
-    return draw2DLines(lines, size, backgroundColor);
+    return Line2D::draw2DLines(lines, size, backgroundColor);
 }
 
-EasyImage LSystem2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor)
+// ========================================= Class Constructors ========================================= //
+LSystem2D::Point2D::Point2D(double aX, double aY)
+{
+    x = aX;
+    y = aY;
+}
+
+LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor)
+{
+    p1 = aP1;
+    p2 = aP2;
+    color = aColor;
+}
+
+// =========================================== Static Methods =========================================== //
+EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor)
 {
     double x_min = INFINITY;
     double y_min = INFINITY;
@@ -101,6 +103,7 @@ EasyImage LSystem2D::draw2DLines(vector<Line2D> lines, const int size, const Col
     return image;
 }
 
+// =========================================== Functions =========================================== //
 void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, LSystem2D::Point2D &startPoint, LSystem2D::Point2D &endPoint, stack<tuple<LSystem2D::Point2D, double>> &stack, const Color &color)
 {
     const double angle = l_system.get_angle() * M_PI/180;
