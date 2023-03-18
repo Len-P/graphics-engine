@@ -42,6 +42,9 @@ namespace Figure3D {
         // Apply transformation matrix to figure
         void applyTransformation(const Matrix &mat);
 
+        // For figures made out of triangles, divide every triangle into 4 triangles n times
+        void triangulate(const int n);
+
         // ============== Static Methods ============== //
         static Figure createCube(const Color &color);
         static Figure createTetrahedron(const Color &color);

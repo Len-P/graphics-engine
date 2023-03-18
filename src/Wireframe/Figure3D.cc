@@ -90,6 +90,13 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
             figure = Figure::createDodecahedron(color);
         }
 
+        else if (figType == "Sphere")
+        {
+            int r = conf[figName]["r"].as_int_or_default(1);
+            int n = conf[figName]["n"].as_int_or_default(1);
+            figure = Figure::createSphere(r, n, color);
+        }
+
         // Finally, transform figure and add it to figures list
         figure.applyTransformation(transformMatrix);
         figures.emplace_back(figure);
@@ -120,6 +127,53 @@ Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, const 
     points = aPoints;
     faces = aFaces;
     color = aColor;
+}
+
+// =========================================== Class Methods =========================================== //
+void Figure3D::Figure::applyTransformation(const Matrix &mat)
+{
+    for (auto &point : points)
+    {
+        point = point * mat;
+    }
+}
+
+void Figure3D::Figure::triangulate(const int n)
+{
+    for (int k = 0; k < n; k++)
+    {
+        int nrFaces = faces.size();
+        int nrPoints = points.size();
+
+        // Old face needs to get replaces by 4 faces that have the correct point indexes
+        // Initial 3 points stay, 3 points get added
+        for (int i = 0; i < nrFaces; i++)
+        {
+            vector<int> &pointIndexes = faces[i].pointIndexes;
+
+            Vector3D &A = points[pointIndexes[0]];
+            Vector3D &B = points[pointIndexes[1]];
+            Vector3D &C = points[pointIndexes[2]];
+            Vector3D D = (A + B) / 2; // nrPoints
+            Vector3D E = (A + C) / 2; // nrPoints + 1
+            Vector3D F = (B + C) / 2; // nrPoints + 2
+
+            points.emplace_back(D);
+            points.emplace_back(E);
+            points.emplace_back(F);
+
+            Face ADE = Face({pointIndexes[0], nrPoints, nrPoints + 1});
+            Face DBF = Face({nrPoints, pointIndexes[1], nrPoints + 2});
+            Face EFC = Face({nrPoints + 1, nrPoints + 2, pointIndexes[2]});
+            Face DFE = Face({nrPoints, nrPoints + 2, nrPoints + 1});
+
+            // Set old face equal to one of the faces (to preserve face indexes), then add the rest of the faces at the end
+            faces[i] = ADE;
+            faces.emplace_back(DBF);
+            faces.emplace_back(EFC);
+            faces.emplace_back(DFE);
+        }
+    }
 }
 
 // =========================================== Static Methods =========================================== //
@@ -287,7 +341,16 @@ Figure3D::Figure Figure3D::Figure::createDodecahedron(const Color &color)
 
 Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, const Color &color)
 {
+    Figure icosa = createIcosahedron(color);
+    icosa.triangulate(n);
 
+    for (auto &point : icosa.points)
+    {
+        point.normalise();
+        point *= r;
+    }
+
+    return icosa;
 }
 
 Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, const Color &color)
@@ -304,7 +367,6 @@ Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, c
 {
 
 }
-
 
 // ========================================== Transformations ========================================== //
 void Figure3D::toPolar(const Vector3D &point, double &r, double &theta, double &phi)
@@ -386,14 +448,6 @@ Matrix Figure3D::eyePointTrans(const Vector3D &eyepoint)
     matrix(4, 3) = -r;
 
     return matrix;
-}
-
-void Figure3D::Figure::applyTransformation(const Matrix &mat)
-{
-    for (auto &point : points)
-    {
-        point = point * mat;
-    }
 }
 
 void Figure3D::applyTransformation(Figures3D &figs, const Matrix &mat)
