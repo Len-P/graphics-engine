@@ -15,9 +15,9 @@ X: Niet werkend of niet geïmplementeerd
 |   | Eye-point                 | V      |
 |   | Projectie                 | V      |
 | 3 | Platonische Lichamen      | V      |
-|   | Kegel en cylinder         |        |
-|   | Bol                       |        |
-|   | Torus                     |        |
+|   | Kegel en cylinder         | V      |
+|   | Bol                       | V      |
+|   | Torus                     | V      |
 |   | 3D L-systemen             |        |
 | 4 | Z-buffering (lijnen)      |        |
 | 5 | Triangulatie              |        |

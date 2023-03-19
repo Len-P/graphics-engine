@@ -33,8 +33,8 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
         double scale = conf[figName]["scale"].as_double_or_default(1);
 
         vector<double> centerTuple = conf[figName]["center"].as_double_tuple_or_die();
-        Vector3D center = Vector3D::point(-centerTuple[0], -centerTuple[1], -centerTuple[2]); // Negative elements to center at (0, 0, 0)
-        Matrix transformMatrix = translate(center) * scaleFigure(scale) * rotateX(rotXAngle) * rotateY(rotYAngle) * rotateZ(rotZAngle);
+        Vector3D center = Vector3D::point(centerTuple[0], centerTuple[1], centerTuple[2]);
+        Matrix transformMatrix =  scaleFigure(scale) * rotateX(rotXAngle) * rotateY(rotYAngle) * rotateZ(rotZAngle) * translate(center);
 
         // Figure color
         vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
@@ -92,9 +92,32 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
 
         else if (figType == "Sphere")
         {
-            int r = conf[figName]["r"].as_int_or_default(1);
-            int n = conf[figName]["n"].as_int_or_default(1);
+            double r = conf[figName]["r"].as_double_or_default(1);
+            int n = conf[figName]["n"].as_int_or_die();
             figure = Figure::createSphere(r, n, color);
+        }
+
+        else if (figType == "Cone")
+        {
+            double h = conf[figName]["height"].as_double_or_die();
+            int n = conf[figName]["n"].as_int_or_die();
+            figure = Figure::createCone(h, n, color);
+        }
+
+        else if (figType == "Cylinder")
+        {
+            double h = conf[figName]["height"].as_double_or_die();
+            int n = conf[figName]["n"].as_int_or_die();
+            figure = Figure::createCylinder(h, n, color);
+        }
+
+        else if (figType == "Torus")
+        {
+            double r = conf[figName]["r"].as_double_or_die();
+            double R = conf[figName]["R"].as_double_or_die();
+            int n = conf[figName]["n"].as_int_or_die();
+            int m = conf[figName]["m"].as_int_or_die();
+            figure = Figure::createTorus(r, R, n, m, color);
         }
 
         // Finally, transform figure and add it to figures list
@@ -112,7 +135,7 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
 // ========================================= Class Constructors ========================================= //
 Figure3D::Face::Face(vector<int> aPointIndexes)
 {
-    pointIndexes = aPointIndexes;
+    pointIndexes = std::move(aPointIndexes);
 }
 
 Figure3D::Figure::Figure()
@@ -355,17 +378,105 @@ Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, con
 
 Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, const Color &color)
 {
+    vector<Vector3D> points;
+    vector<Face> faces;
 
+    // Bottom points
+    for (int i = 0; i < n; i++)
+    {
+        points.emplace_back(Vector3D::point(cos(2 * i * M_PI / n), sin(2 * i * M_PI / n), 0));
+    }
+    // Top point
+    points.emplace_back(Vector3D::point(0, 0, h));
+
+    // Side faces
+    for (int i = 0; i < n; i++)
+    {
+        vector<int> indexes = {i, (i+1)%n, n};
+        faces.emplace_back(indexes);
+    }
+
+    // Bottom face
+    vector<int> bottomFaceIndexes;
+    for(int i = n-1; i >= 0; i--)
+    {
+        bottomFaceIndexes.emplace_back(i);
+    }
+    faces.emplace_back(bottomFaceIndexes);
+
+    return {points, faces, color};
 }
 
-Figure3D::Figure Figure3D::Figure::createCilinder(const double h, const int n, const Color &color)
+Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, const Color &color)
 {
+    vector<Vector3D> points;
+    vector<Face> faces;
 
+    // Separate for loops to preserve indexes
+    // Bottom points
+    for (int i = 0; i < n; i++)
+    {
+        points.emplace_back(Vector3D::point(cos(2 * i * M_PI / n), sin(2 * i * M_PI / n), 0));
+    }
+
+    // Top points
+    for (int i = 0; i < n; i++)
+    {
+        points.emplace_back(Vector3D::point(cos(2 * i * M_PI / n), sin(2 * i * M_PI / n), h));
+    }
+
+    // Side faces
+    for (int i = 0; i < n; i++)
+    {
+        vector<int> indexes = {i, (i+1)%n, (i+1)%n + n, i+n};
+        faces.emplace_back(indexes);
+    }
+
+    // Bottom and top faces
+    vector<int> bottomFaceIndexes;
+    vector<int> topFaceIndexes;
+    for(int i = n-1; i >= 0; i--)
+    {
+        bottomFaceIndexes.emplace_back(i);
+        topFaceIndexes.emplace_back(i + n);
+    }
+    faces.emplace_back(bottomFaceIndexes);
+    faces.emplace_back(topFaceIndexes);
+
+    return {points, faces, color};
 }
 
 Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, const int n, const int m, const Color &color)
 {
+    vector<Vector3D> points;
+    vector<Face> faces;
 
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            double u = 2 * i * M_PI / n;
+            double v = 2 * j * M_PI / m;
+
+            double x = (R + r * cos(v)) * cos (u);
+            double y = (R + r * cos(v)) * sin (u);
+            double z = r * sin(v);
+
+            points.emplace_back(Vector3D::point(x, y, z));
+        }
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            // To get element i,j from the flattened points vector, use: index = i * m + j
+            vector<int> indexes = {i * m + j, (i+1)%n * m + j, (i+1)%n * m + (j+1)%m, i * m + (j+1)%m};
+            faces.emplace_back(indexes);
+        }
+    }
+
+    return {points, faces, color};
 }
 
 // ========================================== Transformations ========================================== //

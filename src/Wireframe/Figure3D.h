@@ -53,7 +53,7 @@ namespace Figure3D {
         static Figure createDodecahedron(const Color &color);
         static Figure createSphere(const double r, const int n, const Color &color);
         static Figure createCone(const double h, const int n, const Color &color);
-        static Figure createCilinder(const double h, const int n, const Color &color);
+        static Figure createCylinder(const double h, const int n, const Color &color);
         static Figure createTorus(const double r, const double R, const int n, const int m, const Color &color);
         // ============================================ //
     };
