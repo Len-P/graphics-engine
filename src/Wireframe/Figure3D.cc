@@ -149,11 +149,11 @@ void Figure3D::Figure::triangulateFaces(const int n)
         for (int i = 0; i < nrFaces; i++)
         {
             int nrPoints = points.size();
-            vector<int> pointIndexes = faces[i].pointIndexes;
+            vector<int> &pointIndexes = faces[i].pointIndexes;
 
-            Vector3D A = points[pointIndexes[0]];
-            Vector3D B = points[pointIndexes[1]];
-            Vector3D C = points[pointIndexes[2]];
+            Vector3D &A = points[pointIndexes[0]];
+            Vector3D &B = points[pointIndexes[1]];
+            Vector3D &C = points[pointIndexes[2]];
             Vector3D D = (A + B) / 2; // nrPoints
             Vector3D E = (A + C) / 2; // nrPoints + 1
             Vector3D F = (B + C) / 2; // nrPoints + 2
