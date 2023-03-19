@@ -2,10 +2,10 @@
 
 
 
-// ========================================== Parse Ini ========================================== //
+// ?========================================== Parse Ini ==========================================? //
 EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
 {
-    // ============== General ============== //
+    // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
@@ -16,7 +16,7 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
 
-    // ============== Figures ============== //
+    // ?============== Figures ==============? //
     Figures3D figures;
 
     for (int i = 0; i < nrFigures; i++)
@@ -125,14 +125,14 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
         figures.emplace_back(figure);
     }
 
-    // ============== Eye Point Transformation ============== //
+    // ?============== Eye Point Transformation ==============? //
     applyTransformation(figures, eyePointTrans(eyePoint));
 
-    // ============== Eye Point Projection and Drawing Image ============== //
+    // ?============== Eye Point Projection and Drawing Image ==============? //
     return LSystem2D::Line2D::draw2DLines(doProjection(figures), size, backgroundColor);
 }
 
-// ========================================= Class Constructors ========================================= //
+// ?========================================= Class Constructors =========================================? //
 Figure3D::Face::Face(vector<int> aPointIndexes)
 {
     pointIndexes = std::move(aPointIndexes);
@@ -152,7 +152,7 @@ Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, const 
     color = aColor;
 }
 
-// =========================================== Class Methods =========================================== //
+// ?=========================================== Class Methods ===========================================? //
 void Figure3D::Figure::applyTransformation(const Matrix &mat)
 {
     for (auto &point : points)
@@ -199,7 +199,7 @@ void Figure3D::Figure::triangulateFaces(const int n)
     }
 }
 
-// =========================================== Static Methods =========================================== //
+// ?=========================================== Static Methods ===========================================? //
 Figure3D::Figure Figure3D::Figure::createCube(const Color &color)
 {
     Vector3D p0 = Vector3D::point(1, 1, -1);
@@ -479,7 +479,7 @@ Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, c
     return {points, faces, color};
 }
 
-// ========================================== Transformations ========================================== //
+// ?========================================== Transformations ==========================================? //
 void Figure3D::toPolar(const Vector3D &point, double &r, double &theta, double &phi)
 {
     r = sqrt(point.x * point.x + point.y * point.y + point.z * point.z);

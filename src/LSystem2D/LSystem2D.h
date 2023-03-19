@@ -54,7 +54,7 @@ namespace LSystem2D {
     void recursiveLSystem(const string &str, unsigned int iter, unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, Point2D &startPoint, Point2D &endPoint, stack<tuple<Point2D, double>> &stack, const Color &color);
 
     // Transforms LSystem to list of lines
-    Lines2D LSystem2Lines2D(const LParser::LSystem2D &l_system, const Color &color);
+    Lines2D LSystemToLines2D(const LParser::LSystem2D &l_system, const Color &color);
 
 }
 

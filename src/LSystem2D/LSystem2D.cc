@@ -2,7 +2,7 @@
 
 
 
-// ========================================== Parse Ini ========================================== //
+// ?========================================== Parse Ini ==========================================? //
 EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
 {
     // Parsing ini file
@@ -23,11 +23,11 @@ EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
     input_stream.close();
 
     // Get vector with lines from LSystem and then draw lines and return image
-    Lines2D lines = LSystem2Lines2D(l_system, color);
+    Lines2D lines = LSystemToLines2D(l_system, color);
     return Line2D::draw2DLines(lines, size, backgroundColor);
 }
 
-// ========================================= Class Constructors ========================================= //
+// ?========================================= Class Constructors =========================================? //
 LSystem2D::Point2D::Point2D(double aX, double aY)
 {
     x = aX;
@@ -41,7 +41,7 @@ LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor)
     color = aColor;
 }
 
-// =========================================== Static Methods =========================================== //
+// ?=========================================== Static Methods ===========================================? //
 EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor)
 {
     double x_min = INFINITY;
@@ -157,7 +157,7 @@ void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const uns
 
 }
 
-LSystem2D::Lines2D LSystem2D::LSystem2Lines2D(const LParser::LSystem2D &l_system, const Color &color)
+LSystem2D::Lines2D LSystem2D::LSystemToLines2D(const LParser::LSystem2D &l_system, const Color &color)
 {
     // Parse .L2D file
     const string &initiator = l_system.get_initiator();
