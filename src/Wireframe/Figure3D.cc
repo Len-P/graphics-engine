@@ -138,22 +138,22 @@ void Figure3D::Figure::applyTransformation(const Matrix &mat)
     }
 }
 
-void Figure3D::Figure::triangulate(const int n)
+void Figure3D::Figure::triangulateFaces(const int n)
 {
     for (int k = 0; k < n; k++)
     {
         int nrFaces = faces.size();
-        int nrPoints = points.size();
 
         // Old face needs to get replaces by 4 faces that have the correct point indexes
         // Initial 3 points stay, 3 points get added
         for (int i = 0; i < nrFaces; i++)
         {
-            vector<int> &pointIndexes = faces[i].pointIndexes;
+            int nrPoints = points.size();
+            vector<int> pointIndexes = faces[i].pointIndexes;
 
-            Vector3D &A = points[pointIndexes[0]];
-            Vector3D &B = points[pointIndexes[1]];
-            Vector3D &C = points[pointIndexes[2]];
+            Vector3D A = points[pointIndexes[0]];
+            Vector3D B = points[pointIndexes[1]];
+            Vector3D C = points[pointIndexes[2]];
             Vector3D D = (A + B) / 2; // nrPoints
             Vector3D E = (A + C) / 2; // nrPoints + 1
             Vector3D F = (B + C) / 2; // nrPoints + 2
@@ -168,7 +168,7 @@ void Figure3D::Figure::triangulate(const int n)
             Face DFE = Face({nrPoints, nrPoints + 2, nrPoints + 1});
 
             // Set old face equal to one of the faces (to preserve face indexes), then add the rest of the faces at the end
-            faces[i] = ADE;
+            faces.at(i) = ADE;
             faces.emplace_back(DBF);
             faces.emplace_back(EFC);
             faces.emplace_back(DFE);
@@ -342,7 +342,7 @@ Figure3D::Figure Figure3D::Figure::createDodecahedron(const Color &color)
 Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, const Color &color)
 {
     Figure icosa = createIcosahedron(color);
-    icosa.triangulate(n);
+    icosa.triangulateFaces(n);
 
     for (auto &point : icosa.points)
     {

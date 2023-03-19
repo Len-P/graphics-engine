@@ -43,7 +43,7 @@ namespace Figure3D {
         void applyTransformation(const Matrix &mat);
 
         // For figures made out of triangles, divide every triangle into 4 triangles n times
-        void triangulate(const int n);
+        void triangulateFaces(const int n);
 
         // ============== Static Methods ============== //
         static Figure createCube(const Color &color);
