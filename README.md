@@ -18,7 +18,7 @@ X: Niet werkend of niet geïmplementeerd
 |   | Kegel en cylinder         | V      |
 |   | Bol                       | V      |
 |   | Torus                     | V      |
-|   | 3D L-systemen             |        |
+|   | 3D L-systemen             | V      |
 | 4 | Z-buffering (lijnen)      |        |
 | 5 | Triangulatie              |        |
 |   | Z-buffering (driehoeken)  |        |
