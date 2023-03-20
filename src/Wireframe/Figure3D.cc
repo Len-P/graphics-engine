@@ -120,6 +120,19 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
             figure = Figure::createTorus(r, R, n, m, color);
         }
 
+        else if (figType == "3DLSystem")
+        {
+            string inputFile = conf[figName]["inputfile"].as_string_or_die();
+
+            // Create 3D LSystem from input file
+            LParser::LSystem3D l_system;
+            ifstream input_stream(inputFile);
+            input_stream >> l_system;
+            input_stream.close();
+
+            figure = Figure::LSystem3DToFigure(l_system, color);
+        }
+
         // Finally, transform figure and add it to figures list
         figure.applyTransformation(transformMatrix);
         figures.emplace_back(figure);
@@ -475,6 +488,112 @@ Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, c
             faces.emplace_back(indexes);
         }
     }
+
+    return {points, faces, color};
+}
+
+void Figure3D::Figure::recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack, const Color &color)
+{
+    const double angle = l_system.get_angle() * M_PI/180;
+
+    for (char c : str)
+    {
+        // If character is not in alphabet (stop condition 1)
+        if (l_system.get_alphabet().find(c) == l_system.get_alphabet().end())
+        {
+            Vector3D tempH = H;
+            Vector3D tempL = L;
+            Vector3D tempU = U;
+
+            switch(c) {
+                case '+':
+                    H = tempH * cos(angle) + tempL * sin(angle);
+                    L = -tempH * sin(angle) + tempL * cos(angle);
+                    break;
+                case '-':
+                    H = tempH * cos(-angle) + tempL * sin(-angle);
+                    L = -tempH * sin(-angle) + tempL * cos(-angle);
+                    break;
+                case '&':
+                    H = tempH * cos(angle) - tempU * sin(angle);
+                    U = tempU * cos(angle) + tempH * sin(angle);
+                    break;
+                case '^':
+                    H = tempH * cos(-angle) - tempU * sin(-angle);
+                    U = tempU * cos(-angle) + tempH * sin(-angle);
+                    break;
+                case '/':
+                    L = tempL * cos(angle) + tempU * sin(angle);
+                    U = -tempL * sin(angle) + tempU * cos(angle);
+                    break;
+                case '\\':
+                    L = tempL * cos(-angle) + tempU * sin(-angle);
+                    U = -tempL * sin(-angle) + tempU * cos(-angle);
+                    break;
+                case '(':  // Save current point and HLU in stack
+                    stack.emplace(endPoint, H, L, U);
+                    break;
+                case ')':  // Teleport back to last point with last HLU
+                    tuple<Vector3D, Vector3D, Vector3D, Vector3D> tuple = stack.top();
+                    endPoint = get<0>(tuple);
+                    H = get<1>(tuple);
+                    L = get<2>(tuple);
+                    U = get<3>(tuple);
+                    stack.pop();
+                    break;
+            }
+
+        }
+
+        // If max depth has been reached (stop condition 2)
+        else if (iter == maxIter)
+        {
+            startPoint = endPoint;
+
+            endPoint = startPoint + H;
+
+            points.emplace_back(startPoint);
+            points.emplace_back(endPoint);
+
+            if (l_system.draw(c))
+            {
+                int size = points.size();
+                faces.emplace_back(Face({size - 2, size - 1}));
+            }
+
+        }
+
+        // Keep going deeper with replacement rules
+        else
+        {
+            const string &replacement = l_system.get_replacement(c);
+            recursiveLSystem3D(replacement, iter + 1, maxIter, H, L, U, l_system, points, faces, startPoint, endPoint, stack, color);
+        }
+
+    }
+
+}
+
+Figure3D::Figure Figure3D::Figure::LSystem3DToFigure(const LParser::LSystem3D &l_system, const Color &color)
+{
+    // Parse .L3D file
+    const string &initiator = l_system.get_initiator();
+    const unsigned int iterations = l_system.get_nr_iterations();
+
+    // Initialize necessary objects
+    Vector3D H = Vector3D::vector(1, 0, 0);
+    Vector3D L = Vector3D::vector(0, 1, 0);
+    Vector3D U = Vector3D::vector(0, 0, 1);
+
+    Vector3D startPoint = Vector3D::point(0, 0, 0);
+    Vector3D endPoint = Vector3D::point(0, 0, 0);
+
+    stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> stack;
+
+    vector<Vector3D> points;
+    vector<Face> faces;
+
+    recursiveLSystem3D(initiator, 0, iterations, H, L, U, l_system, points, faces, startPoint, endPoint, stack, color);
 
     return {points, faces, color};
 }

@@ -103,7 +103,7 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, c
     return image;
 }
 
-// =========================================== Functions =========================================== //
+// ?=========================================== Functions ===========================================? //
 void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, LSystem2D::Point2D &startPoint, LSystem2D::Point2D &endPoint, stack<tuple<LSystem2D::Point2D, double>> &stack, const Color &color)
 {
     const double angle = l_system.get_angle() * M_PI/180;
@@ -132,7 +132,8 @@ void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const uns
             }
 
         }
-            // If max depth has been reached (stop condition 2)
+
+        // If max depth has been reached (stop condition 2)
         else if (iter == maxIter)
         {
             startPoint = endPoint;
@@ -146,7 +147,8 @@ void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const uns
             }
 
         }
-            // Keep going deeper with replacement rules
+
+        // Keep going deeper with replacement rules
         else
         {
             const string &replacement = l_system.get_replacement(c);

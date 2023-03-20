@@ -56,6 +56,7 @@ namespace Figure3D {
         static Figure createCylinder(const double h, const int n, const Color &color);
         static Figure createTorus(const double r, const double R, const int n, const int m, const Color &color);
 
+        static void recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack, const Color &color);
         static Figure LSystem3DToFigure(const LParser::LSystem3D &l_system, const Color &color);
         // ?============================================? //
     };
