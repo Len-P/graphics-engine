@@ -3,7 +3,7 @@
 
 
 // ?========================================== Parse Ini ==========================================? //
-EasyImage Figure3D::parseIniWireframe(const Configuration &conf)
+EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuffering)
 {
     // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();

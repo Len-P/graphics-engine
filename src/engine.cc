@@ -29,6 +29,10 @@ EasyImage generate_image(const Configuration &conf)
     {
         return parseIniWireframe(conf);
     }
+    else if (type == "ZBufferedWireframe")
+    {
+        return parseIniWireframe(conf);
+    }
 
 }
 

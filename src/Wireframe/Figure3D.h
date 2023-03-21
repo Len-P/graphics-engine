@@ -19,7 +19,7 @@ using namespace LSystem2D;
 namespace Figure3D {
 
     // Parse config ini file
-    EasyImage parseIniWireframe(const Configuration &conf);
+    EasyImage parseIniWireframe(const Configuration &conf, const bool ZBuffering = false);
 
     class Face {
     public:

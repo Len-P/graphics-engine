@@ -34,20 +34,22 @@ LSystem2D::Point2D::Point2D(double aX, double aY)
     y = aY;
 }
 
-LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor)
+LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, double aZ0, double aZ1)
 {
     p1 = aP1;
     p2 = aP2;
     color = aColor;
+    z0 = aZ0;
+    z1 = aZ1;
 }
 
 // ?=========================================== Static Methods ===========================================? //
-EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor)
+EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor, const bool ZBuffering)
 {
-    double x_min = INFINITY;
-    double y_min = INFINITY;
-    double x_max = -INFINITY;
-    double y_max = -INFINITY;
+    double x_min = numeric_limits<double>::infinity();
+    double y_min = numeric_limits<double>::infinity();
+    double x_max = -numeric_limits<double>::infinity();
+    double y_max = -numeric_limits<double>::infinity();
 
     // Iterate over all lines and update min and max values
     for (const auto &line : lines)
@@ -87,8 +89,11 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, c
         line.p2.y += dy;
     }
 
+    image_x = lround(image_x);
+    image_y = lround(image_y);
+
     // Create image object
-    EasyImage image(lround(image_x), lround(image_y), backgroundColor);
+    EasyImage image((int) image_x, (int) image_y, backgroundColor);
 
     // Draw all lines on the image
     for (const auto &line : lines)
@@ -97,7 +102,16 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, c
         unsigned int y0 = lround(line.p1.y);
         unsigned int x1 = lround(line.p2.x);
         unsigned int y1 = lround(line.p2.y);
-        image.draw_line(x0, y0, x1, y1, line.color);
+
+        if (ZBuffering)
+        {
+            ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
+            image.draw_zbuf_line(buffer, x0, y0, line.z0, x1, y1, line.z1, line.color);
+        }
+        else
+        {
+            image.draw_line(x0, y0, x1, y1, line.color);
+        }
     }
 
     return image;
