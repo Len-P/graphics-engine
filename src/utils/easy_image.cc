@@ -263,7 +263,7 @@ void img::EasyImage::draw_line(unsigned int x0, unsigned int y0, unsigned int x1
 	}
 }
 
-void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned int y0, const double z0, unsigned int x1, unsigned int y1, const double z1, const Color &color)
+void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned int y0, double z0, unsigned int x1, unsigned int y1, double z1, const Color &color)
 {
     if (x0 >= this->width || y0 >= this->height || x1 >= this->width || y1 > this->height) {
         std::stringstream ss;
@@ -271,22 +271,47 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
            << this->width << " and height " << this->height;
         throw std::runtime_error(ss.str());
     }
+
     if (x0 == x1)
     {
         //special case for x0 == x1
+        int a = std::max(y0, y1) - std::min(y0, y1);
+        int b = a + 1;
+
         for (unsigned int i = std::min(y0, y1); i <= std::max(y0, y1); i++)
         {
-            (*this)(x0, i) = color;
+            b--;
+            double p = (double) a / (double) b;
+            double z = p / z0 + (1 - p) / z1;
+
+            if (z < buffer[x0][i])
+            {
+                buffer[x0][i] = z;
+                (*this)(x0, i) = color;
+            }
         }
     }
+
     else if (y0 == y1)
     {
         //special case for y0 == y1
+        int a = std::max(x0, x1) - std::min(x0, x1);
+        int b = a + 1;
+
         for (unsigned int i = std::min(x0, x1); i <= std::max(x0, x1); i++)
         {
-            (*this)(i, y0) = color;
+            b--;
+            double p = (double) a / (double) b;
+            double z = p / z0 + (1 - p) / z1;
+
+            if (z < buffer[i][y0])
+            {
+                buffer[i][y0] = z;
+                (*this)(i, y0) = color;
+            }
         }
     }
+
     else
     {
         if (x0 > x1)
@@ -294,27 +319,76 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
             //flip points if x1>x0: we want x0 to have the lowest value
             std::swap(x0, x1);
             std::swap(y0, y1);
+            std::swap(z0, z1);
         }
+
         double m = ((double) y1 - (double) y0) / ((double) x1 - (double) x0);
+
         if (-1.0 <= m && m <= 1.0)
         {
+            int a = (x1 - x0);
+            int b = a + 1;
+
             for (unsigned int i = 0; i <= (x1 - x0); i++)
             {
-                (*this)(x0 + i, (unsigned int) round(y0 + m * i)) = color;
+                b--;
+                double p = (double) a / (double) b;
+                double z = p / z0 + (1 - p) / z1;
+
+                unsigned int x_index = x0 + i;
+                unsigned int y_index = round(y0 + m * i);
+
+                double hfg = buffer[x_index][y_index];
+
+                if (z < buffer[x_index][y_index])
+                {
+                    buffer[x_index][y_index] = z;
+                    (*this)(x_index, y_index) = color;
+                }
             }
         }
+
         else if (m > 1.0)
         {
+            int a = (y1 - y0);
+            int b = a + 1;
+
             for (unsigned int i = 0; i <= (y1 - y0); i++)
             {
-                (*this)((unsigned int) round(x0 + (i / m)), y0 + i) = color;
+                b--;
+                double p = (double) a / (double) b;
+                double z = p / z0 + (1 - p) / z1;
+
+                unsigned int x_index = round(x0 + (i / m));
+                unsigned int y_index = y0 + i;
+
+                if (z < buffer[x_index][y_index])
+                {
+                    buffer[x_index][y_index] = z;
+                    (*this)(x_index, y_index) = color;
+                }
             }
         }
+
         else if (m < -1.0)
         {
+            int a = (y0 - y1);
+            int b = a + 1;
+
             for (unsigned int i = 0; i <= (y0 - y1); i++)
             {
-                (*this)((unsigned int) round(x0 - (i / m)), y0 - i) = color;
+                b--;
+                double p = (double) a / (double) b;
+                double z = p / z0 + (1 - p) / z1;
+
+                unsigned int x_index = round(x0 - (i / m));
+                unsigned int y_index = y0 - i;
+
+                if (z < buffer[x_index][y_index])
+                {
+                    buffer[x_index][y_index] = z;
+                    (*this)(x_index, y_index) = color;
+                }
             }
         }
     }

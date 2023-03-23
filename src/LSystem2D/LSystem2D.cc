@@ -28,10 +28,11 @@ EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
 }
 
 // ?========================================= Class Constructors =========================================? //
-LSystem2D::Point2D::Point2D(double aX, double aY)
+LSystem2D::Point2D::Point2D(double aX, double aY, double aZ)
 {
     x = aX;
     y = aY;
+    z = aZ;
 }
 
 LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, double aZ0, double aZ1)
@@ -44,7 +45,7 @@ LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, doubl
 }
 
 // ?=========================================== Static Methods ===========================================? //
-EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, const Color &backgroundColor, const bool ZBuffering)
+EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, const Color &backgroundColor, const bool ZBuffering)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -92,8 +93,9 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, c
     image_x = lround(image_x);
     image_y = lround(image_y);
 
-    // Create image object
+    // Create image object and Z-Buffer
     EasyImage image((int) image_x, (int) image_y, backgroundColor);
+    ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
 
     // Draw all lines on the image
     for (const auto &line : lines)
@@ -105,7 +107,6 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> lines, const int size, c
 
         if (ZBuffering)
         {
-            ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
             image.draw_zbuf_line(buffer, x0, y0, line.z0, x1, y1, line.z1, line.color);
         }
         else
@@ -144,7 +145,6 @@ void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const uns
                     stack.pop();
                     break;
             }
-
         }
 
         // If max depth has been reached (stop condition 2)

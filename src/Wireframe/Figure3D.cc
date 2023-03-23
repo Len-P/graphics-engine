@@ -142,7 +142,8 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuf
     applyTransformation(figures, eyePointTrans(eyePoint));
 
     // ?============== Eye Point Projection and Drawing Image ==============? //
-    return LSystem2D::Line2D::draw2DLines(doProjection(figures), size, backgroundColor);
+    Lines2D lines = doProjection(figures);
+    return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBuffering);
 }
 
 // ?========================================= Class Constructors =========================================? //
@@ -690,7 +691,7 @@ void Figure3D::applyTransformation(Figures3D &figs, const Matrix &mat)
 
 Point2D Figure3D::doProjection(const Vector3D &eyeTransformedPoint, const double d)
 {
-    return {-d * eyeTransformedPoint.x / eyeTransformedPoint.z, -d * eyeTransformedPoint.y / eyeTransformedPoint.z};
+    return {-d * eyeTransformedPoint.x / eyeTransformedPoint.z, -d * eyeTransformedPoint.y / eyeTransformedPoint.z, eyeTransformedPoint.z};
 }
 
 Lines2D Figure3D::doProjection(const Figures3D &eyeTransformedFigures)
@@ -717,7 +718,7 @@ Lines2D Figure3D::doProjection(const Figures3D &eyeTransformedFigures)
             Point2D startPoint = points2DVector[face.pointIndexes[numPoints - 1]];
             Point2D endPoint = points2DVector[face.pointIndexes[0]];
 
-            lines.emplace_back(startPoint, endPoint, fig.color);
+            lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
 
             // Create all other lines
             if (numPoints > 2)
@@ -726,7 +727,7 @@ Lines2D Figure3D::doProjection(const Figures3D &eyeTransformedFigures)
                 {
                     startPoint = endPoint;
                     endPoint = points2DVector[face.pointIndexes[i]];
-                    lines.emplace_back(startPoint, endPoint, fig.color);
+                    lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
                 }
             }
         }

@@ -2,5 +2,5 @@
 
 
 
-ZBuffer::ZBuffer(const int width, const int height) : vector<vector<double>>(height, vector<double>(width, numeric_limits<double>::infinity())) {}
+ZBuffer::ZBuffer(const int width, const int height) : vector<vector<double>>(width, vector<double>(height, numeric_limits<double>::infinity())) {}
 
