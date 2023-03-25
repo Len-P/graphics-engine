@@ -13,9 +13,15 @@
 
 
 
-using namespace std;
 using namespace ini;
 using namespace img;
+using std::string;
+using std::min;
+using std::max;
+using std::numeric_limits;
+using std::tuple;
+using std::stack;
+using std::get;
 
 namespace LSystem2D {
 

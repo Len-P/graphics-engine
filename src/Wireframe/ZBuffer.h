@@ -6,7 +6,7 @@
 
 
 
-using namespace std;
+using std::vector;
 
 class ZBuffer: public vector<vector<double>>
 {

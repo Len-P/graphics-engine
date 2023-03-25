@@ -126,7 +126,7 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuf
 
             // Create 3D LSystem from input file
             LParser::LSystem3D l_system;
-            ifstream input_stream(inputFile);
+            std::ifstream input_stream(inputFile);
             input_stream >> l_system;
             input_stream.close();
 

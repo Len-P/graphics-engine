@@ -18,7 +18,7 @@ EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
 
     // Create 2D LSystem from input file
     LParser::LSystem2D l_system;
-    ifstream input_stream(inputFile);
+    std::ifstream input_stream(inputFile);
     input_stream >> l_system;
     input_stream.close();
 

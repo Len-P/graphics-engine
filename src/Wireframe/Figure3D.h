@@ -11,10 +11,11 @@
 
 
 
-using namespace std;
 using namespace ini;
 using namespace img;
 using namespace LSystem2D;
+using std::list;
+using std::to_string;
 
 namespace Figure3D {
 

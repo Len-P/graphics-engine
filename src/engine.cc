@@ -1,17 +1,14 @@
 #include "utils/easy_image.h"
 #include "utils/ini_configuration.h"
-
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
-
 #include "LSystem2D/LSystem2D.h"
 #include "Wireframe/Figure3D.h"
 
 
 
-using namespace std;
 using namespace ini;
 using namespace img;
 using namespace LSystem2D;
