@@ -3,7 +3,7 @@
 
 
 // ?========================================== Parse Ini ==========================================? //
-EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuffering)
+EasyImage Figure3D::parseIniFigure3D(const Configuration &conf, const bool ZBufferedWireframes, const bool ZBuffering)
 {
     // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();
@@ -143,13 +143,26 @@ EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuf
 
     // ?============== Eye Point Projection and Drawing Image ==============? //
     Lines2D lines = doProjection(figures);
-    return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBuffering);
+    return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBufferedWireframes);
 }
 
 // ?========================================= Class Constructors =========================================? //
 Figure3D::Face::Face(vector<int> aPointIndexes)
 {
     pointIndexes = std::move(aPointIndexes);
+}
+
+vector<Figure3D::Face> Figure3D::Face::triangulate(const Figure3D::Face &face)
+{
+    vector<Figure3D::Face> faces;
+
+    for (int i = 1; i < face.pointIndexes.size() - 1; i++)
+    {
+        Figure3D::Face triangle = Figure3D::Face({face.pointIndexes[0], face.pointIndexes[i], face.pointIndexes[i+1]});
+        faces.emplace_back(triangle);
+    }
+
+    return faces;
 }
 
 Figure3D::Figure::Figure()
@@ -175,7 +188,7 @@ void Figure3D::Figure::applyTransformation(const Matrix &mat)
     }
 }
 
-void Figure3D::Figure::triangulateFaces(const int n)
+void Figure3D::Figure::triangulateTriangles(const int n)
 {
     for (int k = 0; k < n; k++)
     {
@@ -379,7 +392,7 @@ Figure3D::Figure Figure3D::Figure::createDodecahedron(const Color &color)
 Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, const Color &color)
 {
     Figure icosa = createIcosahedron(color);
-    icosa.triangulateFaces(n);
+    icosa.triangulateTriangles(n);
 
     for (auto &point : icosa.points)
     {

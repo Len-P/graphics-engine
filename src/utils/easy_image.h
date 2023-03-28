@@ -20,7 +20,7 @@
 #include <stdint.h>
 #include <vector>
 #include <iostream>
-#include "../Wireframe/ZBuffer.h"
+#include "../Figure3D/ZBuffer.h"
 
 
 

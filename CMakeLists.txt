@@ -21,7 +21,7 @@ set(engine_sources
 		src/utils/l_parser.cc src/utils/l_parser.h
 		src/utils/vector3d.cc src/utils/vector3d.h
 		src/LSystem2D/LSystem2D.cc src/LSystem2D/LSystem2D.h
-        src/Wireframe/Figure3D.cc src/Wireframe/Figure3D.h src/Wireframe/ZBuffer.cc src/Wireframe/ZBuffer.h)
+        src/Figure3D/Figure3D.cc src/Figure3D/Figure3D.h src/Figure3D/ZBuffer.cc src/Figure3D/ZBuffer.h)
 
 ############################################################
 # Create an executable

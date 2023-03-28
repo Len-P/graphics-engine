@@ -45,7 +45,7 @@ LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, doubl
 }
 
 // ?=========================================== Static Methods ===========================================? //
-EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, const Color &backgroundColor, const bool ZBuffering)
+EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, const Color &backgroundColor, const bool ZBufferedWireframes)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -105,7 +105,7 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, 
         unsigned int x1 = lround(line.p2.x);
         unsigned int y1 = lround(line.p2.y);
 
-        if (ZBuffering)
+        if (ZBufferedWireframes)
         {
             image.draw_zbuf_line(buffer, x0, y0, line.z0, x1, y1, line.z1, line.color);
         }

@@ -19,8 +19,7 @@ using std::to_string;
 
 namespace Figure3D {
 
-    // Parse config ini file
-    EasyImage parseIniWireframe(const Configuration &conf, const bool ZBuffering = false);
+    EasyImage parseIniFigure3D(const Configuration &conf, const bool ZBufferedWireframes = false, const bool ZBuffering = false);
 
     class Face {
     public:
@@ -28,6 +27,9 @@ namespace Figure3D {
 
         // Face constructor
         explicit Face(vector<int> aPointIndexes);
+
+        // Triangulates a face of any amount of points
+        vector<Face> triangulate(const Face &face);
     };
 
     class Figure {
@@ -44,7 +46,7 @@ namespace Figure3D {
         void applyTransformation(const Matrix &mat);
 
         // For figures made out of triangles, divide every triangle into 4 triangles n times
-        void triangulateFaces(const int n);
+        void triangulateTriangles(const int n);
 
         // ?============== Static Methods ==============? //
         static Figure createCube(const Color &color);

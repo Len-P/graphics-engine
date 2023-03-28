@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include "LSystem2D/LSystem2D.h"
-#include "Wireframe/Figure3D.h"
+#include "Figure3D/Figure3D.h"
 
 
 
@@ -24,13 +24,16 @@ EasyImage generate_image(const Configuration &conf)
     }
     else if (type == "Wireframe")
     {
-        return parseIniWireframe(conf, false);
+        return parseIniFigure3D(conf, false);
     }
     else if (type == "ZBufferedWireframe")
     {
-        return parseIniWireframe(conf, true);
+        return parseIniFigure3D(conf, true);
     }
-
+    else if (type == "ZBuffering")
+    {
+        return parseIniFigure3D(conf, false, true);
+    }
 }
 
 int main(int argc, char const* argv[])
