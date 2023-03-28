@@ -281,7 +281,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
         for (unsigned int i = std::min(y0, y1); i <= std::max(y0, y1); i++)
         {
             b--;
-            double p = (double) a / (double) b;
+            double p = (double) b / (double) a;
             double z = p / z0 + (1 - p) / z1;
 
             if (z < buffer[x0][i])
@@ -301,7 +301,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
         for (unsigned int i = std::min(x0, x1); i <= std::max(x0, x1); i++)
         {
             b--;
-            double p = (double) a / (double) b;
+            double p = (double) b / (double) a;
             double z = p / z0 + (1 - p) / z1;
 
             if (z < buffer[i][y0])
@@ -332,13 +332,11 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
             for (unsigned int i = 0; i <= (x1 - x0); i++)
             {
                 b--;
-                double p = (double) a / (double) b;
+                double p = (double) b / (double) a;
                 double z = p / z0 + (1 - p) / z1;
 
                 unsigned int x_index = x0 + i;
                 unsigned int y_index = round(y0 + m * i);
-
-                double hfg = buffer[x_index][y_index];
 
                 if (z < buffer[x_index][y_index])
                 {
@@ -356,7 +354,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
             for (unsigned int i = 0; i <= (y1 - y0); i++)
             {
                 b--;
-                double p = (double) a / (double) b;
+                double p = (double) b / (double) a;
                 double z = p / z0 + (1 - p) / z1;
 
                 unsigned int x_index = round(x0 + (i / m));
@@ -378,7 +376,7 @@ void img::EasyImage::draw_zbuf_line(ZBuffer &buffer, unsigned int x0, unsigned i
             for (unsigned int i = 0; i <= (y0 - y1); i++)
             {
                 b--;
-                double p = (double) a / (double) b;
+                double p = (double) b / (double) a;
                 double z = p / z0 + (1 - p) / z1;
 
                 unsigned int x_index = round(x0 - (i / m));
