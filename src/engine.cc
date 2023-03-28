@@ -6,6 +6,7 @@
 #include <string>
 #include "LSystem2D/LSystem2D.h"
 #include "Figure3D/Figure3D.h"
+#include "ZBuffering/ZBuffering.h"
 
 
 
@@ -24,15 +25,15 @@ EasyImage generate_image(const Configuration &conf)
     }
     else if (type == "Wireframe")
     {
-        return parseIniFigure3D(conf, false);
+        return parseIniWireframe(conf, false);
     }
     else if (type == "ZBufferedWireframe")
     {
-        return parseIniFigure3D(conf, true);
+        return parseIniWireframe(conf, true);
     }
     else if (type == "ZBuffering")
     {
-        return parseIniFigure3D(conf, false, true);
+        return ZBuffering::parseIni(conf);
     }
 }
 

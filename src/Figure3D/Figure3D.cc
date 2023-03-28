@@ -3,7 +3,7 @@
 
 
 // ?========================================== Parse Ini ==========================================? //
-EasyImage Figure3D::parseIniFigure3D(const Configuration &conf, const bool ZBufferedWireframes, const bool ZBuffering)
+EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuffering)
 {
     // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();
@@ -21,129 +21,19 @@ EasyImage Figure3D::parseIniFigure3D(const Configuration &conf, const bool ZBuff
 
     for (int i = 0; i < nrFigures; i++)
     {
-        Figure figure = Figure();
-
         string figName = "Figure" + to_string(i);
-        string figType = conf[figName]["type"].as_string_or_die();
 
-        // Transformations
-        double rotXAngle = conf[figName]["rotateX"].as_double_or_default(0) * M_PI/180;
-        double rotYAngle = conf[figName]["rotateY"].as_double_or_default(0) * M_PI/180;
-        double rotZAngle = conf[figName]["rotateZ"].as_double_or_default(0) * M_PI/180;
-        double scale = conf[figName]["scale"].as_double_or_default(1);
+        Figure figure = Figure::generateFigure(conf, figName, false);
 
-        vector<double> centerTuple = conf[figName]["center"].as_double_tuple_or_die();
-        Vector3D center = Vector3D::point(centerTuple[0], centerTuple[1], centerTuple[2]);
-        Matrix transformMatrix =  scaleFigure(scale) * rotateX(rotXAngle) * rotateY(rotYAngle) * rotateZ(rotZAngle) * translate(center);
-
-        // Figure color
-        vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
-        Color color = Color(lround(colorTuple[0] * 255), lround(colorTuple[1] * 255), lround(colorTuple[2] * 255));
-
-        // Check figType and generate correct figure
-        if (figType == "LineDrawing")
-        {
-            // Lines and points
-            int nrPoints = conf[figName]["nrPoints"].as_int_or_die();
-            int nrLines = conf[figName]["nrLines"].as_int_or_die();
-
-            vector<Vector3D> points;
-            vector<Face> faces;
-
-            for (int n = 0; n < nrPoints; n++)
-            {
-                vector<double> point = conf[figName]["point" + to_string(n)].as_double_tuple_or_die();
-                points.emplace_back(Vector3D::point(point[0], point[1], point[2]));
-            }
-
-            for (int n = 0; n < nrLines; n++)
-            {
-                faces.emplace_back(conf[figName]["line" + to_string(n)].as_int_tuple_or_die());
-            }
-
-            figure = Figure(points, faces, color);
-        }
-
-        else if (figType == "Cube")
-        {
-            figure = Figure::createCube(color);
-
-        }
-
-        else if (figType == "Tetrahedron")
-        {
-            figure = Figure::createTetrahedron(color);
-        }
-
-        else if (figType == "Octahedron")
-        {
-            figure = Figure::createOctahedron(color);
-        }
-
-        else if (figType == "Icosahedron")
-        {
-            figure = Figure::createIcosahedron(color);
-        }
-
-        else if (figType == "Dodecahedron")
-        {
-            figure = Figure::createDodecahedron(color);
-        }
-
-        else if (figType == "Sphere")
-        {
-            double r = conf[figName]["r"].as_double_or_default(1);
-            int n = conf[figName]["n"].as_int_or_die();
-            figure = Figure::createSphere(r, n, color);
-        }
-
-        else if (figType == "Cone")
-        {
-            double h = conf[figName]["height"].as_double_or_die();
-            int n = conf[figName]["n"].as_int_or_die();
-            figure = Figure::createCone(h, n, color);
-        }
-
-        else if (figType == "Cylinder")
-        {
-            double h = conf[figName]["height"].as_double_or_die();
-            int n = conf[figName]["n"].as_int_or_die();
-            figure = Figure::createCylinder(h, n, color);
-        }
-
-        else if (figType == "Torus")
-        {
-            double r = conf[figName]["r"].as_double_or_die();
-            double R = conf[figName]["R"].as_double_or_die();
-            int n = conf[figName]["n"].as_int_or_die();
-            int m = conf[figName]["m"].as_int_or_die();
-            figure = Figure::createTorus(r, R, n, m, color);
-        }
-
-        else if (figType == "3DLSystem")
-        {
-            string inputFile = conf[figName]["inputfile"].as_string_or_die();
-
-            // Create 3D LSystem from input file
-            LParser::LSystem3D l_system;
-            std::ifstream input_stream(inputFile);
-            input_stream >> l_system;
-            input_stream.close();
-
-            figure = Figure::LSystem3DToFigure(l_system, color);
-        }
-
-        // Finally, transform figure and add it to figures list
-        figure.applyTransformation(transformMatrix);
         figures.emplace_back(figure);
     }
 
-    // ?============== Eye Point Transformation ==============? //
+    // ?=========== Eye Point Transformation ===========? //
     applyTransformation(figures, eyePointTrans(eyePoint));
 
-    // ?============== Eye Point Projection and Drawing Image ==============? //
+    // ?==== Eye Point Projection and Drawing Image ====? //
     Lines2D lines = doProjection(figures);
-    return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBufferedWireframes);
+    return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBuffering);
 }
 
 // ?========================================= Class Constructors =========================================? //
@@ -224,6 +114,23 @@ void Figure3D::Figure::triangulateTriangles(const int n)
             faces.emplace_back(DFE);
         }
     }
+}
+
+void Figure3D::Figure::triangulate()
+{
+    vector<Face> triangles;
+
+    for (const auto &face : faces)
+    {
+        vector<Face> faceTriangles = Face::triangulate(face);
+
+        for (const auto &triangle : faceTriangles)
+        {
+            triangles.emplace_back(triangle);
+        }
+    }
+
+    faces = triangles;
 }
 
 // ?=========================================== Static Methods ===========================================? //
@@ -610,6 +517,128 @@ Figure3D::Figure Figure3D::Figure::LSystem3DToFigure(const LParser::LSystem3D &l
     recursiveLSystem3D(initiator, 0, iterations, H, L, U, l_system, points, faces, startPoint, endPoint, stack, color);
 
     return {points, faces, color};
+}
+
+Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, const string &figName, const bool &triangulate)
+{
+    Figure figure;
+    string figType = conf[figName]["type"].as_string_or_die();
+
+    // Transformations
+    double rotXAngle = conf[figName]["rotateX"].as_double_or_default(0) * M_PI/180;
+    double rotYAngle = conf[figName]["rotateY"].as_double_or_default(0) * M_PI/180;
+    double rotZAngle = conf[figName]["rotateZ"].as_double_or_default(0) * M_PI/180;
+    double scale = conf[figName]["scale"].as_double_or_default(1);
+
+    vector<double> centerTuple = conf[figName]["center"].as_double_tuple_or_die();
+    Vector3D center = Vector3D::point(centerTuple[0], centerTuple[1], centerTuple[2]);
+    Matrix transformMatrix =  scaleFigure(scale) * rotateX(rotXAngle) * rotateY(rotYAngle) * rotateZ(rotZAngle) * translate(center);
+
+    // Figure color
+    vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
+    Color color = Color(lround(colorTuple[0] * 255), lround(colorTuple[1] * 255), lround(colorTuple[2] * 255));
+
+    // Check figType and generate correct figure
+    if (figType == "LineDrawing")
+    {
+        // Lines and points
+        int nrPoints = conf[figName]["nrPoints"].as_int_or_die();
+        int nrLines = conf[figName]["nrLines"].as_int_or_die();
+
+        vector<Vector3D> points;
+        vector<Face> faces;
+
+        for (int n = 0; n < nrPoints; n++)
+        {
+            vector<double> point = conf[figName]["point" + to_string(n)].as_double_tuple_or_die();
+            points.emplace_back(Vector3D::point(point[0], point[1], point[2]));
+        }
+
+        for (int n = 0; n < nrLines; n++)
+        {
+            faces.emplace_back(conf[figName]["line" + to_string(n)].as_int_tuple_or_die());
+        }
+
+        figure = Figure(points, faces, color);
+    }
+
+    else if (figType == "Cube")
+    {
+        figure = Figure::createCube(color);
+
+    }
+
+    else if (figType == "Tetrahedron")
+    {
+        figure = Figure::createTetrahedron(color);
+    }
+
+    else if (figType == "Octahedron")
+    {
+        figure = Figure::createOctahedron(color);
+    }
+
+    else if (figType == "Icosahedron")
+    {
+        figure = Figure::createIcosahedron(color);
+    }
+
+    else if (figType == "Dodecahedron")
+    {
+        figure = Figure::createDodecahedron(color);
+    }
+
+    else if (figType == "Sphere")
+    {
+        double r = conf[figName]["r"].as_double_or_default(1);
+        int n = conf[figName]["n"].as_int_or_die();
+        figure = Figure::createSphere(r, n, color);
+    }
+
+    else if (figType == "Cone")
+    {
+        double h = conf[figName]["height"].as_double_or_die();
+        int n = conf[figName]["n"].as_int_or_die();
+        figure = Figure::createCone(h, n, color);
+    }
+
+    else if (figType == "Cylinder")
+    {
+        double h = conf[figName]["height"].as_double_or_die();
+        int n = conf[figName]["n"].as_int_or_die();
+        figure = Figure::createCylinder(h, n, color);
+    }
+
+    else if (figType == "Torus")
+    {
+        double r = conf[figName]["r"].as_double_or_die();
+        double R = conf[figName]["R"].as_double_or_die();
+        int n = conf[figName]["n"].as_int_or_die();
+        int m = conf[figName]["m"].as_int_or_die();
+        figure = Figure::createTorus(r, R, n, m, color);
+    }
+
+    else if (figType == "3DLSystem")
+    {
+        string inputFile = conf[figName]["inputfile"].as_string_or_die();
+
+        // Create 3D LSystem from input file
+        LParser::LSystem3D l_system;
+        std::ifstream input_stream(inputFile);
+        input_stream >> l_system;
+        input_stream.close();
+
+        figure = Figure::LSystem3DToFigure(l_system, color);
+    }
+
+    figure.applyTransformation(transformMatrix);
+
+    if (triangulate)
+    {
+        figure.triangulate();
+    }
+
+    return figure;
 }
 
 // ?========================================== Transformations ==========================================? //

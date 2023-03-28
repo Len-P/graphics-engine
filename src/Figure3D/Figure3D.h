@@ -6,6 +6,7 @@
 #include "../utils/easy_image.h"
 #include "../utils/vector3d.h"
 #include "../LSystem2D/LSystem2D.h"
+#include "../ZBuffering/ZBuffer.h"
 #include <list>
 #include <cmath>
 
@@ -19,7 +20,7 @@ using std::to_string;
 
 namespace Figure3D {
 
-    EasyImage parseIniFigure3D(const Configuration &conf, const bool ZBufferedWireframes = false, const bool ZBuffering = false);
+    EasyImage parseIniWireframe(const Configuration &conf, const bool ZBuffering = false);
 
     class Face {
     public:
@@ -29,7 +30,7 @@ namespace Figure3D {
         explicit Face(vector<int> aPointIndexes);
 
         // Triangulates a face of any amount of points
-        vector<Face> triangulate(const Face &face);
+        static vector<Face> triangulate(const Face &face);
     };
 
     class Figure {
@@ -48,6 +49,9 @@ namespace Figure3D {
         // For figures made out of triangles, divide every triangle into 4 triangles n times
         void triangulateTriangles(const int n);
 
+        // Turn all faces into triangles
+        void triangulate();
+
         // ?============== Static Methods ==============? //
         static Figure createCube(const Color &color);
         static Figure createTetrahedron(const Color &color);
@@ -61,6 +65,9 @@ namespace Figure3D {
 
         static void recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack, const Color &color);
         static Figure LSystem3DToFigure(const LParser::LSystem3D &l_system, const Color &color);
+
+        // Generate a figure based on name. Triangulate all faces if desired.
+        static Figure generateFigure(const Configuration &conf, const string &figName, const bool &triangulate);
         // ?============================================? //
     };
 

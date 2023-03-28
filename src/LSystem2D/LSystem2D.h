@@ -5,7 +5,7 @@
 #include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
 #include "../utils/l_parser.h"
-#include "../Figure3D/ZBuffer.h"
+#include "../ZBuffering/ZBuffer.h"
 #include <cmath>
 #include <fstream>
 #include <stack>
@@ -57,7 +57,7 @@ namespace LSystem2D {
         Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, double aZ0 = 0, double aZ1 = 0);
 
         // Draws all lines from a list of lines on an image. Returns image. Image parameters are size and background color.
-        static EasyImage draw2DLines(vector<Line2D> &lines, int size, const Color &backgroundColor, const bool ZBufferedWireframes = false);
+        static EasyImage draw2DLines(vector<Line2D> &lines, int size, const Color &backgroundColor, const bool ZBuffering = false);
     };
 
     using Lines2D = vector<Line2D>;
