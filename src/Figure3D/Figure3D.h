@@ -20,7 +20,7 @@ using std::to_string;
 
 namespace Figure3D {
 
-    EasyImage parseIniWireframe(const Configuration &conf, const bool ZBuffering = false);
+    EasyImage parseIni(const Configuration &conf, const bool ZBuffering = false);
 
     class Face {
     public:

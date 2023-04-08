@@ -3,7 +3,7 @@
 
 
 // ?========================================== Parse Ini ==========================================? //
-EasyImage LSystem2D::parseIniLSystem2D(const Configuration &conf)
+EasyImage LSystem2D::parseIni(const Configuration &conf)
 {
     // Parsing ini file
     int size = conf["General"]["size"].as_int_or_die();
@@ -68,7 +68,7 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, 
     double image_y = size * (y_range / max(x_range, y_range));
 
     // Calculate scale factor d
-    double d = 0.95 * (image_x /  x_range);
+    double d = 0.95 * image_x /  x_range;
 
     // Calculate translation distances dx and dy
     double DC_x = d * (x_min + x_max)/2;

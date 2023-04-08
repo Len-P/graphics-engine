@@ -12,8 +12,6 @@
 
 using namespace ini;
 using namespace img;
-using namespace LSystem2D;
-using namespace Figure3D;
 
 EasyImage generate_image(const Configuration &conf)
 {
@@ -21,15 +19,15 @@ EasyImage generate_image(const Configuration &conf)
 
     if (type == "2DLSystem")
     {
-        return parseIniLSystem2D(conf);
+        return LSystem2D::parseIni(conf);
     }
     else if (type == "Wireframe")
     {
-        return parseIniWireframe(conf, false);
+        return Figure3D::parseIni(conf, false);
     }
     else if (type == "ZBufferedWireframe")
     {
-        return parseIniWireframe(conf, true);
+        return Figure3D::parseIni(conf, true);
     }
     else if (type == "ZBuffering")
     {

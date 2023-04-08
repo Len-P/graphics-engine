@@ -32,6 +32,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
     Lines2D lines = doProjection(figures);
 
     // ?============== Draw Image ==============? //
+    //return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor);
     return draw_zbuf_figures(figures, lines, size, backgroundColor);
 
 }
@@ -59,7 +60,7 @@ EasyImage ZBuffering::draw_zbuf_figures(const Figures3D &figures, const Lines2D 
     double image_y = size * (y_range / max(x_range, y_range));
 
     // Calculate scale factor d
-    double d = 0.95 * (image_x /  x_range);
+    double d = 0.95 * image_x /  x_range;
 
     // Calculate translation distances dx and dy
     double DC_x = d * (x_min + x_max)/2;
@@ -94,19 +95,59 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
     Point2D C_2D = Point2D(-d * C.x / C.z + dx, -d * C.y / C.z + dy);
-    vector<Point2D> points = {A_2D, B_2D, C_2D};
 
-    double y_min = numeric_limits<double>::infinity();
-    double y_max = -numeric_limits<double>::infinity();
+    Vector3D G = Vector3D::point((A_2D.x + B_2D.x + C_2D.x)/3, (A_2D.y + B_2D.y + C_2D.y)/3, 1/(3*A.z) + 1/(3*B.z) + 1/(3*C.z) );
 
-    // Iterate over all points and update min and max values
-    for (const auto &point : points) // check 0.5?? cursus p.38
+    Vector3D u = B - A;
+    Vector3D v = C - A;
+    Vector3D w = Vector3D::cross(u, v);
+
+    double k = w.x * A.x + w.y * A.y + w.z * A.z;
+    double dzdx = w.x / (-d * k);
+    double dzdy = w.y / (-d * k);
+
+    double y_min = min(A_2D.y, min(B_2D.y, C_2D.y));
+    double y_max = max(A_2D.y, max(B_2D.y, C_2D.y));
+
+    int y_minInt = lround(y_min + 0.5);
+    int y_maxInt = lround(y_max - 0.5);
+
+    for (int yI = y_minInt; yI < y_maxInt + 1; yI++)
     {
-        y_min = min(y_min, point.y);
-        y_max = max(y_max, point.y);
+        double ABxL = numeric_limits<double>::infinity();
+        double ACxL = numeric_limits<double>::infinity();
+        double BCxL = numeric_limits<double>::infinity();
+
+        double ABxR = -numeric_limits<double>::infinity();
+        double ACxR = -numeric_limits<double>::infinity();
+        double BCxR = -numeric_limits<double>::infinity();
+
+        calculateIntermediateX_LandR(A_2D, B_2D, yI, ABxL, ABxR);
+        calculateIntermediateX_LandR(C_2D, A_2D, yI, ACxL, ACxR);
+        calculateIntermediateX_LandR(B_2D, C_2D, yI, BCxL, BCxR);
+
+        int xL = lround(min(ABxL, min(BCxL, ACxL)) + 0.5);
+        int xR = lround(max(ABxR, max(BCxR, ACxR)) - 0.5);
+
+        for (int i = xL; i < xR + 1; i ++)
+        {
+            double z = (1.0001 * G.z) + (i - G.x) * dzdx + (yI - G.y) * dzdy;
+
+            if (z < zbuf[i][yI])
+            {
+                zbuf[i][yI] = z;
+                image(i, yI) = color;
+            }
+        }
     }
+}
 
-    int y_minInt = lround(y_min);
-    int y_maxInt = lround(y_max);
-
+void ZBuffering::calculateIntermediateX_LandR(const Point2D &P, const Point2D &Q, const int &yI, double &PQxL, double &PQxR)
+{
+    if ( ( (double) yI - P.y) * ( (double) yI - Q.y) <= 0 && P.y != Q.y )
+    {
+        double xI = Q.x + (P.x - Q.x) * ( (double) yI - Q.y) / (P.y - Q.y);
+        PQxL = min(PQxL, xI);
+        PQxR = max(PQxR, xI);
+    }
 }

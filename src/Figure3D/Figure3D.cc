@@ -3,7 +3,7 @@
 
 
 // ?========================================== Parse Ini ==========================================? //
-EasyImage Figure3D::parseIniWireframe(const Configuration &conf, const bool ZBuffering)
+EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
 {
     // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();
@@ -713,7 +713,7 @@ Matrix Figure3D::eyePointTrans(const Vector3D &eyepoint)
     matrix(1, 1) = -sin(theta);
     matrix(1, 2) = -cos(theta) * cos(phi);
     matrix(1, 3) = cos(theta) * sin(phi);
-    matrix(2,1) = cos(theta);
+    matrix(2, 1) = cos(theta);
     matrix(2, 2) = -sin(theta) * cos(phi);
     matrix(2, 3) = sin(theta) * sin(phi);
     matrix(3, 2) = sin(phi);

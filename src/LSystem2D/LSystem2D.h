@@ -26,7 +26,7 @@ using std::get;
 namespace LSystem2D {
 
     // Parse config ini file
-    EasyImage parseIniLSystem2D(const Configuration &conf);
+    EasyImage parseIni(const Configuration &conf);
 
     class Point2D {
     public:
