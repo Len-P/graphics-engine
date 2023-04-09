@@ -7,6 +7,7 @@
 #include "../utils/vector3d.h"
 #include "../LSystem2D/LSystem2D.h"
 #include "../ZBuffering/ZBuffer.h"
+#include "../Fractal3D/Fractal3D.h"
 #include <list>
 #include <cmath>
 
@@ -32,6 +33,9 @@ namespace Figure3D {
         // Triangulates a face of any amount of points
         static vector<Face> triangulate(const Face &face);
     };
+
+    class Figure;
+    typedef list<Figure> Figures3D;
 
     class Figure {
     public:
@@ -70,28 +74,6 @@ namespace Figure3D {
         static Figure generateFigure(const Configuration &conf, const string &figName, const bool &triangulate);
         // ?============================================? //
     };
-
-    typedef list<Figure> Figures3D;
-
-    // ?============== Transformations ==============? //
-    void toPolar(const Vector3D &point, double &r, double &theta, double &phi);
-
-    Matrix scaleFigure(const double scale);
-    Matrix rotateX(const double angle);
-    Matrix rotateY(const double angle);
-    Matrix rotateZ(const double angle);
-    Matrix translate(const Vector3D &vector);
-    Matrix eyePointTrans(const Vector3D &eyepoint);
-
-    // Apply transformation matrix to list of figures
-    void applyTransformation(Figures3D &figs, const Matrix &mat);
-
-    // Project eye transformed Vector3D point to Point2D
-    Point2D doProjection(const Vector3D &eyeTransformedPoint, const double d);
-
-    // Project eye transformed list of figures to list of Line2D objects
-    Lines2D doProjection(const Figures3D &eyeTransformedFigures);
-    // ?==============================================? //
 
 }
 

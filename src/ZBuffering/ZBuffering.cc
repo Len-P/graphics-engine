@@ -28,13 +28,12 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
     }
 
     // ?==== Eye Point Transformation and Projection ====? //
-    applyTransformation(figures, eyePointTrans(eyePoint));
-    Lines2D lines = doProjection(figures);
+    Transformations::applyTransformation(figures, Transformations::eyePointTrans(eyePoint));
+    Lines2D lines = Transformations::doProjection(figures);
 
     // ?============== Draw Image ==============? //
     //return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor);
     return draw_zbuf_figures(figures, lines, size, backgroundColor);
-
 }
 
 EasyImage ZBuffering::draw_zbuf_figures(const Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor)

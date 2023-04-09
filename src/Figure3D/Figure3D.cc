@@ -25,14 +25,26 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
 
         Figure figure = Figure::generateFigure(conf, figName, false);
 
-        figures.emplace_back(figure);
+        // Fractals or normal functionality
+        string figType = conf[figName]["type"].as_string_or_die();
+        int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
+
+        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
+        {
+            int fractalScale = conf[figName]["fractalScale"].as_int_or_default(0);
+            Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
+        }
+        else
+        {
+            figures.emplace_back(figure);
+        }
     }
 
     // ?=========== Eye Point Transformation ===========? //
-    applyTransformation(figures, eyePointTrans(eyePoint));
+    Transformations::applyTransformation(figures, Transformations::eyePointTrans(eyePoint));
 
     // ?==== Eye Point Projection and Drawing Image ====? //
-    Lines2D lines = doProjection(figures);
+    Lines2D lines = Transformations::doProjection(figures);
     return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBuffering);
 }
 
@@ -532,7 +544,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
 
     vector<double> centerTuple = conf[figName]["center"].as_double_tuple_or_die();
     Vector3D center = Vector3D::point(centerTuple[0], centerTuple[1], centerTuple[2]);
-    Matrix transformMatrix =  scaleFigure(scale) * rotateX(rotXAngle) * rotateY(rotYAngle) * rotateZ(rotZAngle) * translate(center);
+    Matrix transformMatrix =  Transformations::scaleFigure(scale) * Transformations::rotateX(rotXAngle) * Transformations::rotateY(rotYAngle) * Transformations::rotateZ(rotZAngle) * Transformations::translate(center);
 
     // Figure color
     vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
@@ -562,28 +574,27 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         figure = Figure(points, faces, color);
     }
 
-    else if (figType == "Cube")
+    else if (figType == "Cube" || figType == "FractalCube")
     {
         figure = Figure::createCube(color);
-
     }
 
-    else if (figType == "Tetrahedron")
+    else if (figType == "Tetrahedron" || figType == "FractalTetrahedron")
     {
         figure = Figure::createTetrahedron(color);
     }
 
-    else if (figType == "Octahedron")
+    else if (figType == "Octahedron" || figType == "FractalOctahedron")
     {
         figure = Figure::createOctahedron(color);
     }
 
-    else if (figType == "Icosahedron")
+    else if (figType == "Icosahedron" || figType == "FractalIcosahedron")
     {
         figure = Figure::createIcosahedron(color);
     }
 
-    else if (figType == "Dodecahedron")
+    else if (figType == "Dodecahedron" || figType == "FractalDodecahedron")
     {
         figure = Figure::createDodecahedron(color);
     }
@@ -641,140 +652,4 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
     return figure;
 }
 
-// ?========================================== Transformations ==========================================? //
-void Figure3D::toPolar(const Vector3D &point, double &r, double &theta, double &phi)
-{
-    r = sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
-    theta = atan2(point.y, point.x);
-    phi = acos(point.z / r);
-}
-
-Matrix Figure3D::scaleFigure(const double scale)
-{
-    Matrix matrix;
-    matrix(1, 1) = scale;
-    matrix(2, 2) = scale;
-    matrix(3, 3) = scale;
-
-    return matrix;
-}
-
-Matrix Figure3D::rotateX(const double angle)
-{
-    Matrix matrix;
-    matrix(2, 2) = cos(angle);
-    matrix(3, 3) = cos(angle);
-    matrix(2, 3) = sin(angle);
-    matrix(3, 2) = -sin(angle);
-
-    return matrix;
-}
-
-Matrix Figure3D::rotateY(const double angle)
-{
-    Matrix matrix;
-    matrix(1, 1) = cos(angle);
-    matrix(3, 3) = cos(angle);
-    matrix(3, 1) = sin(angle);
-    matrix(1, 3) = -sin(angle);
-
-    return matrix;
-}
-
-Matrix Figure3D::rotateZ(const double angle)
-{
-    Matrix matrix;
-    matrix(1, 1) = cos(angle);
-    matrix(2, 2) = cos(angle);
-    matrix(1, 2) = sin(angle);
-    matrix(2, 1) = -sin(angle);
-
-    return matrix;
-}
-
-Matrix Figure3D::translate(const Vector3D &vector)
-{
-    Matrix matrix;
-    matrix(4, 1) = vector.x;
-    matrix(4, 2) = vector.y;
-    matrix(4, 3) = vector.z;
-
-    return matrix;
-}
-
-Matrix Figure3D::eyePointTrans(const Vector3D &eyepoint)
-{
-    double r;
-    double theta;
-    double phi;
-    toPolar(eyepoint, r, theta, phi);
-
-    Matrix matrix;
-    matrix(1, 1) = -sin(theta);
-    matrix(1, 2) = -cos(theta) * cos(phi);
-    matrix(1, 3) = cos(theta) * sin(phi);
-    matrix(2, 1) = cos(theta);
-    matrix(2, 2) = -sin(theta) * cos(phi);
-    matrix(2, 3) = sin(theta) * sin(phi);
-    matrix(3, 2) = sin(phi);
-    matrix(3, 3) = cos(phi);
-    matrix(4, 3) = -r;
-
-    return matrix;
-}
-
-void Figure3D::applyTransformation(Figures3D &figs, const Matrix &mat)
-{
-    for (auto &fig : figs)
-    {
-        fig.applyTransformation(mat);
-    }
-}
-
-Point2D Figure3D::doProjection(const Vector3D &eyeTransformedPoint, const double d)
-{
-    return {-d * eyeTransformedPoint.x / eyeTransformedPoint.z, -d * eyeTransformedPoint.y / eyeTransformedPoint.z, eyeTransformedPoint.z};
-}
-
-Lines2D Figure3D::doProjection(const Figures3D &eyeTransformedFigures)
-{
-    Lines2D lines;
-
-    for (const auto &fig : eyeTransformedFigures)
-    {
-        vector<Point2D> points2DVector;
-
-        // Get vector of Point2D objects instead of Vector3D objects
-        for (const auto &point: fig.points)
-        {
-            points2DVector.emplace_back(Figure3D::doProjection(point, 1));
-        }
-
-        // Fill list of lines with indexes from the faces
-        // Indexes are used to select points from points2DVector to create lines with
-        for (const auto &face : fig.faces)
-        {
-            // First create the line between the first and last points
-            int numPoints = face.pointIndexes.size();
-
-            Point2D startPoint = points2DVector[face.pointIndexes[numPoints - 1]];
-            Point2D endPoint = points2DVector[face.pointIndexes[0]];
-
-            lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
-
-            // Create all other lines
-            if (numPoints > 2)
-            {
-                for (int i = 1; i < numPoints; i++)
-                {
-                    startPoint = endPoint;
-                    endPoint = points2DVector[face.pointIndexes[i]];
-                    lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
-                }
-            }
-        }
-    }
-
-    return lines;
-}
 
