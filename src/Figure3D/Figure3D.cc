@@ -31,8 +31,12 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
 
         if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
         {
-            int fractalScale = conf[figName]["fractalScale"].as_int_or_default(0);
+            double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
             Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
+        }
+        else if (figType == "MengerSponge")
+        {
+            Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
         }
         else
         {
@@ -143,6 +147,18 @@ void Figure3D::Figure::triangulate()
     }
 
     faces = triangles;
+}
+
+void Figure3D::Figure::splitLine3(Vector3D &A, Vector3D &B)
+{
+    Vector3D AB = B - A;
+
+    // Points inbetween each line that split the line in 3
+    Vector3D pointAB1 = A + AB/3;
+    Vector3D pointAB2 = A + 2*AB/3;
+
+    points.emplace_back(pointAB1);
+    points.emplace_back(pointAB2);
 }
 
 // ?=========================================== Static Methods ===========================================? //
@@ -425,6 +441,201 @@ Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, c
     return {points, faces, color};
 }
 
+Figure3D::Figure Figure3D::Figure::createBuckyBall(const Color &color)
+{
+    Figure icosa = createIcosahedron(color);
+
+    vector<Face> newFaces;
+
+    for (const auto &face : icosa.faces)
+    {
+        int pointsSize = icosa.points.size();
+
+        vector<int> pointIndexes = face.pointIndexes;
+        Vector3D A = icosa.points[pointIndexes[0]];
+        Vector3D B = icosa.points[pointIndexes[1]];
+        Vector3D C = icosa.points[pointIndexes[2]];
+
+        icosa.splitLine3(A, B);
+        icosa.splitLine3(B, C);
+        icosa.splitLine3(C, A);
+
+        // Create hexagon in center
+        newFaces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3, pointsSize + 4, pointsSize + 5}));
+    }
+
+    icosa.faces = newFaces;
+    return icosa;
+}
+
+void Figure3D::Figure::createMengerSponge(Figure3D::Figure &fig, Figure3D::Figures3D &fractal, const int nrIter, const int iterCounter)
+{
+    if (nrIter == 0)
+    {
+        fractal.emplace_back(fig);
+    }
+
+    for (int i = 0; i < fig.points.size(); i++)
+    {
+        Vector3D &point = fig.points[i];
+        Figure3D::Figure figCopy = fig;
+        double scale = 1.0 / 3.0;
+        double transScale = scale / iterCounter;
+
+        figCopy.applyTransformation(Transformations::scaleFigure(scale));
+        figCopy.applyTransformation(Transformations::translate(point - figCopy.points[i]));
+
+        Figure3D::Figure figCopyOffset0;
+        Figure3D::Figure figCopyOffset1;
+        Figure3D::Figure figCopyOffset2;
+        if (i == 0)
+        {
+            figCopyOffset0 = figCopy;
+            figCopyOffset0.applyTransformation(Transformations::translate(Vector3D::vector(0,0,2*transScale)));
+
+            figCopyOffset1 = figCopy;
+            figCopyOffset1.applyTransformation(Transformations::translate(Vector3D::vector(0,-2*transScale,0)));
+
+            figCopyOffset2 = figCopy;
+            figCopyOffset2.applyTransformation(Transformations::translate(Vector3D::vector(-2*transScale,0,0)));
+        }
+
+        Figure3D::Figure figCopyOffset3;
+        Figure3D::Figure figCopyOffset4;
+        Figure3D::Figure figCopyOffset5;
+        if (i == 2)
+        {
+            figCopyOffset3 = figCopy;
+            figCopyOffset3.applyTransformation(Transformations::translate(Vector3D::vector(0,0,2*transScale)));
+
+            figCopyOffset4 = figCopy;
+            figCopyOffset4.applyTransformation(Transformations::translate(Vector3D::vector(0,2*transScale,0)));
+
+            figCopyOffset5 = figCopy;
+            figCopyOffset5.applyTransformation(Transformations::translate(Vector3D::vector(2*transScale,0,0)));
+        }
+
+        Figure3D::Figure figCopyOffset6;
+        Figure3D::Figure figCopyOffset7;
+        Figure3D::Figure figCopyOffset8;
+        if (i == 5)
+        {
+            figCopyOffset6 = figCopy;
+            figCopyOffset6.applyTransformation(Transformations::translate(Vector3D::vector(0,0,-2*transScale)));
+
+            figCopyOffset7 = figCopy;
+            figCopyOffset7.applyTransformation(Transformations::translate(Vector3D::vector(0,-2*transScale,0)));
+
+            figCopyOffset8 = figCopy;
+            figCopyOffset8.applyTransformation(Transformations::translate(Vector3D::vector(2*transScale,0,0)));
+        }
+
+        Figure3D::Figure figCopyOffset9;
+        Figure3D::Figure figCopyOffset10;
+        Figure3D::Figure figCopyOffset11;
+        if (i == 7)
+        {
+            figCopyOffset9 = figCopy;
+            figCopyOffset9.applyTransformation(Transformations::translate(Vector3D::vector(0,0,-2*transScale)));
+
+            figCopyOffset10 = figCopy;
+            figCopyOffset10.applyTransformation(Transformations::translate(Vector3D::vector(0,2*transScale,0)));
+
+            figCopyOffset11 = figCopy;
+            figCopyOffset11.applyTransformation(Transformations::translate(Vector3D::vector(-2*transScale,0,0)));
+        }
+
+        if (nrIter == 1)
+        {
+            fractal.emplace_back(figCopy);
+
+            if (iterCounter == 1)
+            {
+                fractal.emplace_back(fig);
+            }
+
+            if (i == 0)
+            {
+                fractal.emplace_back(figCopyOffset0);
+                fractal.emplace_back(figCopyOffset1);
+                fractal.emplace_back(figCopyOffset2);
+            }
+            else if (i == 2)
+            {
+                fractal.emplace_back(figCopyOffset3);
+                fractal.emplace_back(figCopyOffset4);
+                fractal.emplace_back(figCopyOffset5);
+            }
+            else if (i == 5)
+            {
+                fractal.emplace_back(figCopyOffset6);
+                fractal.emplace_back(figCopyOffset7);
+                fractal.emplace_back(figCopyOffset8);
+            }
+            else if (i == 7)
+            {
+                fractal.emplace_back(figCopyOffset9);
+                fractal.emplace_back(figCopyOffset10);
+                fractal.emplace_back(figCopyOffset11);
+            }
+        }
+        else
+        {
+            createMengerSponge(figCopy, fractal, nrIter - 1, iterCounter + 1);
+        }
+    }
+
+//    Fractal3D::generateFractal(figure, figures, 1, 1);
+
+//    int nrFaces = cube.faces.size();
+//    for (int i = nrFaces - 1; i > -1; i--) //for (int i = 0; i < nrFaces; i++)
+//    {
+//        Face &face = cube.faces[i];
+//        int pointsSize = cube.points.size();
+//
+//        vector<int> pointIndexes = face.pointIndexes;
+//        Vector3D A = cube.points[pointIndexes[0]];
+//        Vector3D B = cube.points[pointIndexes[1]];
+//        Vector3D C = cube.points[pointIndexes[2]];
+//        Vector3D D = cube.points[pointIndexes[3]];
+//
+//        // Get all points on outer edges
+//        cube.splitLine3(A, B);
+//        cube.splitLine3(B, C);
+//        cube.splitLine3(C, D);
+//        cube.splitLine3(D, A);
+//
+//        // EFGH is the center square
+//        Vector3D BC = C - B;
+//
+//        Vector3D E = cube.points[pointsSize] + 2*BC/3;
+//        Vector3D F = cube.points[pointsSize] + BC/3;
+//        Vector3D G = cube.points[pointsSize + 1] + BC/3;
+//        Vector3D H = cube.points[pointsSize + 1] + 2*BC/3;
+//        int pointsSizeEFGH = pointsSize + 8; // Update pointsSize from previous expansions of the points vector
+//        cube.points.emplace_back(E);
+//        cube.points.emplace_back(F);
+//        cube.points.emplace_back(G);
+//        cube.points.emplace_back(H);
+//
+//        // Center face (remove later)
+//        cube.faces.emplace_back(Face({pointsSizeEFGH, pointsSizeEFGH + 1, pointsSizeEFGH + 2, pointsSizeEFGH + 3}));
+
+        //cube.faces.emplace_back(Face({pointIndexes[0], pointsSize + 1, pointsSizeEFGH, pointsSize + 7}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+//        cube.faces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3}));
+
+
+    //}
+
+
+}
+
 void Figure3D::Figure::recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack, const Color &color)
 {
     const double angle = l_system.get_angle() * M_PI/180;
@@ -574,7 +785,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         figure = Figure(points, faces, color);
     }
 
-    else if (figType == "Cube" || figType == "FractalCube")
+    else if (figType == "Cube" || figType == "FractalCube" || figType == "MengerSponge")
     {
         figure = Figure::createCube(color);
     }
@@ -640,6 +851,11 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         input_stream.close();
 
         figure = Figure::LSystem3DToFigure(l_system, color);
+    }
+
+    else if (figType == "BuckyBall" || figType == "FractalBuckyBall")
+    {
+        figure = Figure::createBuckyBall(color);
     }
 
     figure.applyTransformation(transformMatrix);
