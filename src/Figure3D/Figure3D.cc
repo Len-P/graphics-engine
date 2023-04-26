@@ -469,6 +469,7 @@ Figure3D::Figure Figure3D::Figure::createBuckyBall(const Color &color)
         newFaces.emplace_back(Face({pointsSize, pointsSize + 1, pointsSize + 2, pointsSize + 3, pointsSize + 4, pointsSize + 5}));
     }
 
+    // Erase original icosa points (important for fractal functionality)
     icosa.points.erase(icosa.points.begin(), icosa.points.begin() + oldPointSize);
 
     //! /$$$$$$$                                        /$$             /$$                                   /$$               /$$$           /$$          /$$$

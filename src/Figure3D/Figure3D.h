@@ -91,12 +91,12 @@ namespace Figure3D {
     public:
         Vector3D point;
 
-        explicit distanceToPointComparator(const Vector3D& p)
+        explicit distanceToPointComparator(const Vector3D &p)
         {
             this->point = p;
         }
 
-        inline bool operator() (const pair<Vector3D, int>& vec1, const pair<Vector3D, int>& vec2) const
+        inline bool operator() (const pair<Vector3D, int> &vec1, const pair<Vector3D, int> &vec2) const
         {
             double dx = vec1.first.x - point.x;
             double dy = vec1.first.y - point.y;
