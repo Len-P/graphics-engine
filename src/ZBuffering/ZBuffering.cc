@@ -24,7 +24,23 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
 
         Figure figure = Figure::generateFigure(conf, figName, true);
 
-        figures.emplace_back(figure);
+        // Fractals or normal functionality
+        string figType = conf[figName]["type"].as_string_or_die();
+        int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
+
+        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
+        {
+            double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
+            Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
+        }
+        else if (figType == "MengerSponge")
+        {
+            Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
+        }
+        else
+        {
+            figures.emplace_back(figure);
+        }
     }
 
     // ?==== Eye Point Transformation and Projection ====? //
@@ -32,7 +48,6 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
     Lines2D lines = Transformations::doProjection(figures);
 
     // ?============== Draw Image ==============? //
-    //return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor);
     return draw_zbuf_figures(figures, lines, size, backgroundColor);
 }
 

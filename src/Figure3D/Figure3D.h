@@ -10,6 +10,9 @@
 #include "../Fractal3D/Fractal3D.h"
 #include <list>
 #include <cmath>
+#include <set>
+#include <map>
+#include <algorithm>
 
 
 
@@ -17,6 +20,10 @@ using namespace ini;
 using namespace img;
 using namespace LSystem2D;
 using std::list;
+using std::set;
+using std::map;
+using std::pair;
+using std::sort;
 using std::to_string;
 
 namespace Figure3D {
@@ -78,6 +85,31 @@ namespace Figure3D {
         // Generate a figure based on name. Triangulate all faces if desired.
         static Figure generateFigure(const Configuration &conf, const string &figName, const bool &triangulate);
         // ?============================================? //
+    };
+
+    class distanceToPointComparator {
+    public:
+        Vector3D point;
+
+        explicit distanceToPointComparator(const Vector3D& p)
+        {
+            this->point = p;
+        }
+
+        inline bool operator() (const pair<Vector3D, int>& vec1, const pair<Vector3D, int>& vec2) const
+        {
+            double dx = vec1.first.x - point.x;
+            double dy = vec1.first.y - point.y;
+            double dz = vec1.first.z - point.z;
+            double d1 = sqrt(dx*dx + dy*dy + dz*dz);
+
+            dx = vec2.first.x - point.x;
+            dy = vec2.first.y - point.y;
+            dz = vec2.first.z - point.z;
+            double d2 = sqrt(dx*dx + dy*dy + dz*dz);
+
+            return (d1 < d2);
+        }
     };
 
 }

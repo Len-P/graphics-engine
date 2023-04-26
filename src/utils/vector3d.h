@@ -20,6 +20,7 @@
 #define VECTOR_INCLUDED
 
 #include <iostream>
+#include <tuple>
 
 #define NR_DIMS 3
 
@@ -365,6 +366,11 @@ class Vector3D
                  * \return A reference to this object.
                  */
                 Vector3D &operator*=(const Matrix &rhs);
+
+                bool operator < (const Vector3D & p) const
+                {
+                    return std::make_tuple((float) x, (float) y, (float) z) < std::make_tuple((float) p.x, (float) p.y, (float) p.z);
+                }
 
                 /**
                  * \brief Calculates the dot-product of this vector and another one.
