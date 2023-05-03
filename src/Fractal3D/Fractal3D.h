@@ -9,14 +9,16 @@
 
 using std::list;
 
-namespace Figure3D {
+namespace Figure3D
+{
     class Figure;
     typedef list<Figure> Figures3D;
 }
 
-class Fractal3D {
-public:
-    static void generateFractal(Figure3D::Figure &fig, Figure3D::Figures3D &fractal, const int nrIter, const double scale);
+class Fractal3D
+{
+    public:
+        static void generateFractal(Figure3D::Figure &fig, Figure3D::Figures3D &fractal, const int nrIter, const double scale);
 };
 
 

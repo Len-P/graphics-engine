@@ -31,7 +31,11 @@ EasyImage generate_image(const Configuration &conf)
     }
     else if (type == "ZBuffering")
     {
-        return ZBuffering::parseIni(conf);
+        return ZBuffering::parseIni(conf, false);
+    }
+    else if (type == "LightedZBuffering")
+    {
+        return ZBuffering::parseIni(conf, true);
     }
 }
 

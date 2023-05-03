@@ -69,10 +69,19 @@ namespace img
 			 */
 			Color(uint8_t r, uint8_t g, uint8_t b);
 
+            // Constructor with tuple
+            explicit Color(vector<double> &colorTuple);
+
 			/**
 			 * Destructor
 			 */
 			~Color();
+
+            // Element-wise addition of 2 colors (none of the components can go above 0)
+            void add(Color &color);
+
+            // Element-wise multiplication of 2 colors
+            void multiply(Color &color);
 	};
 
 	/**

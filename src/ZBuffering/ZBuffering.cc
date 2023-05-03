@@ -2,18 +2,48 @@
 
 
 
-EasyImage ZBuffering::parseIni(const Configuration &conf)
+EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
 {
     // ?============== General ==============? //
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(lround(backgroundColorTuple[0] * 255), lround(backgroundColorTuple[1] * 255), lround(backgroundColorTuple[2] * 255));
+    Color backgroundColor = Color(backgroundColorTuple);
 
     int nrFigures = conf["General"]["nrFigures"].as_int_or_die();
 
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
+
+    // ?=============== Lights ===============? //
+    Lights3D lights;
+
+    if (lighted)
+    {
+        int nrLights = conf["General"]["nrLights"].as_int_or_die();
+
+        for (int i = 0; i < nrLights; i++)
+        {
+            string lightName = "Light" + to_string(i);
+
+            vector<double> ambientLightTuple = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
+            Color ambientLight = Color(ambientLightTuple);
+
+            vector<double> diffuseLightTuple = conf[lightName]["diffuseLight"].as_double_tuple_or_default({0, 0, 0});
+            Color diffuseLight = Color(diffuseLightTuple);
+
+            vector<double> specularLightTuple = conf[lightName]["specularLight"].as_double_tuple_or_default({0, 0, 0});
+            Color specularLight = Color(specularLightTuple);
+
+            lights.emplace_back(ambientLight, diffuseLight, specularLight);
+        }
+    }
+    else
+    {
+        // Add white ambient light
+        // This is needed for old functionality where figures only have 1 (ambient) color and no lights in the .ini
+        lights.emplace_back();
+    }
 
     // ?============== Figures ==============? //
     Figures3D figures;
@@ -22,7 +52,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
     {
         string figName = "Figure" + to_string(i);
 
-        Figure figure = Figure::generateFigure(conf, figName, true);
+        Figure figure = Figure::generateFigure(conf, figName, true, lighted);
 
         // Fractals or normal functionality
         string figType = conf[figName]["type"].as_string_or_die();
@@ -48,10 +78,10 @@ EasyImage ZBuffering::parseIni(const Configuration &conf)
     Lines2D lines = Transformations::doProjection(figures);
 
     // ?============== Draw Image ==============? //
-    return draw_zbuf_figures(figures, lines, size, backgroundColor);
+    return draw_zbuf_figures(figures, lines, size, backgroundColor, lights);
 }
 
-EasyImage ZBuffering::draw_zbuf_figures(const Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor)
+EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor, Lights3D &lights)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -89,7 +119,7 @@ EasyImage ZBuffering::draw_zbuf_figures(const Figures3D &figures, const Lines2D 
     EasyImage image((int) image_x, (int) image_y, backgroundColor);
     ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
 
-    for (const auto &fig : figures)
+    for (auto &fig : figures)
     {
         for (const auto &face : fig.faces)
         {
@@ -97,14 +127,14 @@ EasyImage ZBuffering::draw_zbuf_figures(const Figures3D &figures, const Lines2D 
             Vector3D B = fig.points[face.pointIndexes[1]];
             Vector3D C = fig.points[face.pointIndexes[2]];
 
-            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.color);
+            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.ambientReflection, fig.diffuseReflection, fig.specularReflection, fig.reflectionCoefficient, lights);
         }
     }
 
     return image;
 }
 
-void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const Color &color)
+void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, Color ambientReflection, Color diffuseReflection, Color specularReflection, const double reflectionCoeff, Lights3D &lights)
 {
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
@@ -119,6 +149,13 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
     double k = w.x * A.x + w.y * A.y + w.z * A.z;
     double dzdx = w.x / (-d * k);
     double dzdy = w.y / (-d * k);
+
+    // *********** Lights ***********
+
+    Light ambient = Light::totalAmbient(lights);
+    ambientReflection.multiply(ambient.ambientLight);
+
+    // ******************************
 
     double y_min = min(A_2D.y, min(B_2D.y, C_2D.y));
     double y_max = max(A_2D.y, max(B_2D.y, C_2D.y));
@@ -150,7 +187,7 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
             if (z < zbuf[i][yI])
             {
                 zbuf[i][yI] = z;
-                image(i, yI) = color;
+                image(i, yI) = ambientReflection;
             }
         }
     }

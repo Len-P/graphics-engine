@@ -9,12 +9,12 @@ EasyImage LSystem2D::parseIni(const Configuration &conf)
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(lround(backgroundColorTuple[0] * 255), lround(backgroundColorTuple[1] * 255), lround(backgroundColorTuple[2] * 255));
+    Color backgroundColor = Color(backgroundColorTuple);
 
     string inputFile = conf["2DLSystem"]["inputfile"].as_string_or_die();
 
     vector<double> colorTuple = conf["2DLSystem"]["color"].as_double_tuple_or_die();
-    Color color = Color(lround(colorTuple[0] * 255), lround(colorTuple[1] * 255), lround(colorTuple[2] * 255));
+    Color color = Color(colorTuple);
 
     // Create 2D LSystem from input file
     LParser::LSystem2D l_system;

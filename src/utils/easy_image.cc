@@ -120,8 +120,37 @@ img::Color::Color(uint8_t r, uint8_t g, uint8_t b) :
 	blue(b), green(g), red(r)
 {
 }
+
+img::Color::Color(vector<double> &colorTuple) :
+    red(lround(colorTuple[0] * 255)), green(lround(colorTuple[1] * 255)), blue(lround(colorTuple[2] * 255))
+{
+}
+
 img::Color::~Color()
 {
+}
+
+void img::Color::add(img::Color &color)
+{
+    red += color.red;
+    if (red > 1) {
+        red = 1;
+    }
+    green += color.green;
+    if (green > 1) {
+        green = 1;
+    }
+    blue += color.blue;
+    if (blue > 1) {
+        blue = 1;
+    }
+}
+
+void img::Color::multiply(img::Color &color)
+{
+    red *= color.red;
+    green *= color.green;
+    blue *= color.blue;
 }
 
 img::UnsupportedFileTypeException::UnsupportedFileTypeException(std::string const& msg) :

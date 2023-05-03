@@ -122,7 +122,7 @@ Lines2D Transformations::doProjection(const Figure3D::Figures3D &eyeTransformedF
             Point2D startPoint = points2DVector[face.pointIndexes[numPoints - 1]];
             Point2D endPoint = points2DVector[face.pointIndexes[0]];
 
-            lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
+            lines.emplace_back(startPoint, endPoint, fig.ambientReflection, startPoint.z, endPoint.z);
 
             // Create all other lines
             if (numPoints > 2)
@@ -131,7 +131,7 @@ Lines2D Transformations::doProjection(const Figure3D::Figures3D &eyeTransformedF
                 {
                     startPoint = endPoint;
                     endPoint = points2DVector[face.pointIndexes[i]];
-                    lines.emplace_back(startPoint, endPoint, fig.color, startPoint.z, endPoint.z);
+                    lines.emplace_back(startPoint, endPoint, fig.ambientReflection, startPoint.z, endPoint.z);
                 }
             }
         }

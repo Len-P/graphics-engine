@@ -9,7 +9,7 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(lround(backgroundColorTuple[0] * 255), lround(backgroundColorTuple[1] * 255), lround(backgroundColorTuple[2] * 255));
+    Color backgroundColor = Color(backgroundColorTuple);
 
     int nrFigures = conf["General"]["nrFigures"].as_int_or_die();
 
@@ -75,14 +75,40 @@ Figure3D::Figure::Figure()
 {
     points = {};
     faces = {};
-    color = Color();
+    ambientReflection = Color();
+    diffuseReflection = Color();
+    specularReflection = Color();
+    reflectionCoefficient = 0;
 }
 
-Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, const Color &aColor)
+Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection)
 {
     points = aPoints;
     faces = aFaces;
-    color = aColor;
+    ambientReflection = aAmbientReflection;
+    diffuseReflection = Color();
+    specularReflection = Color();
+    reflectionCoefficient = 0;
+}
+
+Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection, Color &aDiffuseReflection, Color &aSpecularReflection, double aReflectionCoefficient)
+{
+    points = aPoints;
+    faces = aFaces;
+    ambientReflection = aAmbientReflection;
+    diffuseReflection = aDiffuseReflection;
+    specularReflection = aSpecularReflection;
+    reflectionCoefficient = aReflectionCoefficient;
+}
+
+Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, reflectionCoeffs &tuple)
+{
+    points = aPoints;
+    faces = aFaces;
+    ambientReflection = get<0>(tuple);
+    diffuseReflection = get<1>(tuple);
+    specularReflection = get<2>(tuple);
+    reflectionCoefficient = get<3>(tuple);
 }
 
 // ?=========================================== Class Methods ===========================================? //
@@ -162,7 +188,7 @@ void Figure3D::Figure::splitLine3(Vector3D &A, Vector3D &B)
 }
 
 // ?=========================================== Static Methods ===========================================? //
-Figure3D::Figure Figure3D::Figure::createCube(const Color &color)
+Figure3D::Figure Figure3D::Figure::createCube(reflectionCoeffs &colorCoeffs)
 {
     Vector3D p0 = Vector3D::point(1, 1, -1);
     Vector3D p1 = Vector3D::point(-1, 1, -1);
@@ -184,10 +210,10 @@ Figure3D::Figure Figure3D::Figure::createCube(const Color &color)
     vector<Vector3D> points = {p0, p1, p2, p3, p4, p5, p6, p7};
     vector<Face> faces = {front, back, left, right, top, bottom};
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createTetrahedron(const Color &color)
+Figure3D::Figure Figure3D::Figure::createTetrahedron(reflectionCoeffs &colorCoeffs)
 {
     Vector3D p0 = Vector3D::point(1, -1, -1);
     Vector3D p1 = Vector3D::point(-1, 1, -1);
@@ -202,10 +228,10 @@ Figure3D::Figure Figure3D::Figure::createTetrahedron(const Color &color)
     vector<Vector3D> points = {p0, p1, p2, p3};
     vector<Face> faces = {f0, f1, f2, f3};
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createOctahedron(const Color &color)
+Figure3D::Figure Figure3D::Figure::createOctahedron(reflectionCoeffs &colorCoeffs)
 {
     Vector3D p0 = Vector3D::point(1, 0, 0);
     Vector3D p1 = Vector3D::point(0, 1, 0);
@@ -226,10 +252,10 @@ Figure3D::Figure Figure3D::Figure::createOctahedron(const Color &color)
     vector<Vector3D> points = {p0, p1, p2, p3, p4, p5};
     vector<Face> faces = {f0, f1, f2, f3, f4, f5, f6, f7};
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createIcosahedron(const Color &color)
+Figure3D::Figure Figure3D::Figure::createIcosahedron(reflectionCoeffs &colorCoeffs)
 {
     vector<Vector3D> points = {Vector3D::point(0, 0, sqrt(5)/2)}; // Already add first point without logic
 
@@ -279,13 +305,13 @@ Figure3D::Figure Figure3D::Figure::createIcosahedron(const Color &color)
 
     vector<Face> faces = {f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19};
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createDodecahedron(const Color &color)
+Figure3D::Figure Figure3D::Figure::createDodecahedron(reflectionCoeffs &colorCoeffs)
 {
     // Create new icosahedron
-    Figure fig = createIcosahedron(color);
+    Figure fig = createIcosahedron(colorCoeffs);
 
     vector<Vector3D> points;
 
@@ -320,13 +346,13 @@ Figure3D::Figure Figure3D::Figure::createDodecahedron(const Color &color)
 
     vector<Face> faces = {f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11};
 
-    fig = Figure(points, faces, color);
+    fig = Figure(points, faces, colorCoeffs);
     return fig;
 }
 
-Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, const Color &color)
+Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, reflectionCoeffs &colorCoeffs)
 {
-    Figure icosa = createIcosahedron(color);
+    Figure icosa = createIcosahedron(colorCoeffs);
     icosa.triangulateTriangles(n);
 
     for (auto &point : icosa.points)
@@ -338,7 +364,7 @@ Figure3D::Figure Figure3D::Figure::createSphere(const double r, const int n, con
     return icosa;
 }
 
-Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, const Color &color)
+Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, reflectionCoeffs &colorCoeffs)
 {
     vector<Vector3D> points;
     vector<Face> faces;
@@ -366,10 +392,10 @@ Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, const
     }
     faces.emplace_back(bottomFaceIndexes);
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, const Color &color)
+Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, reflectionCoeffs &colorCoeffs)
 {
     vector<Vector3D> points;
     vector<Face> faces;
@@ -405,10 +431,10 @@ Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, c
     faces.emplace_back(bottomFaceIndexes);
     faces.emplace_back(topFaceIndexes);
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, const int n, const int m, const Color &color)
+Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, const int n, const int m, reflectionCoeffs &colorCoeffs)
 {
     vector<Vector3D> points;
     vector<Face> faces;
@@ -438,12 +464,12 @@ Figure3D::Figure Figure3D::Figure::createTorus(const double r, const double R, c
         }
     }
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createBuckyBall(const Color &color)
+Figure3D::Figure Figure3D::Figure::createBuckyBall(reflectionCoeffs &colorCoeffs)
 {
-    Figure icosa = createIcosahedron(color);
+    Figure icosa = createIcosahedron(colorCoeffs);
 
     int oldPointSize = icosa.points.size();
 
@@ -688,7 +714,7 @@ void Figure3D::Figure::createMengerSponge(Figure3D::Figure &fig, Figure3D::Figur
     }
 }
 
-void Figure3D::Figure::recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack, const Color &color)
+void Figure3D::Figure::recursiveLSystem3D(const string &str, unsigned int iter, unsigned int maxIter, Vector3D &H, Vector3D &L, Vector3D &U, const LParser::LSystem3D &l_system, vector<Vector3D> &points, vector<Figure3D::Face> &faces, Vector3D &startPoint, Vector3D &endPoint, stack<tuple<Vector3D, Vector3D, Vector3D, Vector3D>> &stack)
 {
     const double angle = l_system.get_angle() * M_PI/180;
 
@@ -763,14 +789,14 @@ void Figure3D::Figure::recursiveLSystem3D(const string &str, unsigned int iter, 
         else
         {
             const string &replacement = l_system.get_replacement(c);
-            recursiveLSystem3D(replacement, iter + 1, maxIter, H, L, U, l_system, points, faces, startPoint, endPoint, stack, color);
+            recursiveLSystem3D(replacement, iter + 1, maxIter, H, L, U, l_system, points, faces, startPoint, endPoint, stack);
         }
 
     }
 
 }
 
-Figure3D::Figure Figure3D::Figure::LSystem3DToFigure(const LParser::LSystem3D &l_system, const Color &color)
+Figure3D::Figure Figure3D::Figure::LSystem3DToFigure(const LParser::LSystem3D &l_system, reflectionCoeffs &colorCoeffs)
 {
     // Parse .L3D file
     const string &initiator = l_system.get_initiator();
@@ -789,12 +815,12 @@ Figure3D::Figure Figure3D::Figure::LSystem3DToFigure(const LParser::LSystem3D &l
     vector<Vector3D> points;
     vector<Face> faces;
 
-    recursiveLSystem3D(initiator, 0, iterations, H, L, U, l_system, points, faces, startPoint, endPoint, stack, color);
+    recursiveLSystem3D(initiator, 0, iterations, H, L, U, l_system, points, faces, startPoint, endPoint, stack);
 
-    return {points, faces, color};
+    return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, const string &figName, const bool &triangulate)
+Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, const string &figName, const bool &triangulate, const bool &lighted)
 {
     Figure figure;
     string figType = conf[figName]["type"].as_string_or_die();
@@ -810,8 +836,22 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
     Matrix transformMatrix =  Transformations::scaleFigure(scale) * Transformations::rotateX(rotXAngle) * Transformations::rotateY(rotYAngle) * Transformations::rotateZ(rotZAngle) * Transformations::translate(center);
 
     // Figure color
-    vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
-    Color color = Color(lround(colorTuple[0] * 255), lround(colorTuple[1] * 255), lround(colorTuple[2] * 255));
+    reflectionCoeffs colorCoeffs;
+
+    if (!lighted)
+    {
+        vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
+        colorCoeffs = make_tuple(Color(colorTuple), Color(), Color(), 0);
+    }
+    else
+    {
+        vector<double> ambientLightTuple = conf[figName]["ambientReflection"].as_double_tuple_or_default({0, 0, 0});
+        vector<double> diffuseLightTuple = conf[figName]["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
+        vector<double> specularLightTuple = conf[figName]["specularReflection"].as_double_tuple_or_default({0, 0, 0});
+        double reflectionCoeff = conf[figName]["reflectionCoefficient"].as_double_or_default(0);
+        colorCoeffs = make_tuple(Color(ambientLightTuple), Color(diffuseLightTuple), Color(specularLightTuple), reflectionCoeff);
+    }
+
 
     // Check figType and generate correct figure
     if (figType == "LineDrawing")
@@ -834,53 +874,53 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
             faces.emplace_back(conf[figName]["line" + to_string(n)].as_int_tuple_or_die());
         }
 
-        figure = Figure(points, faces, color);
+        figure = Figure(points, faces, get<0>(colorCoeffs));
     }
 
     else if (figType == "Cube" || figType == "FractalCube" || figType == "MengerSponge")
     {
-        figure = Figure::createCube(color);
+        figure = Figure::createCube(colorCoeffs);
     }
 
     else if (figType == "Tetrahedron" || figType == "FractalTetrahedron")
     {
-        figure = Figure::createTetrahedron(color);
+        figure = Figure::createTetrahedron(colorCoeffs);
     }
 
     else if (figType == "Octahedron" || figType == "FractalOctahedron")
     {
-        figure = Figure::createOctahedron(color);
+        figure = Figure::createOctahedron(colorCoeffs);
     }
 
     else if (figType == "Icosahedron" || figType == "FractalIcosahedron")
     {
-        figure = Figure::createIcosahedron(color);
+        figure = Figure::createIcosahedron(colorCoeffs);
     }
 
     else if (figType == "Dodecahedron" || figType == "FractalDodecahedron")
     {
-        figure = Figure::createDodecahedron(color);
+        figure = Figure::createDodecahedron(colorCoeffs);
     }
 
     else if (figType == "Sphere")
     {
         double r = conf[figName]["r"].as_double_or_default(1);
         int n = conf[figName]["n"].as_int_or_die();
-        figure = Figure::createSphere(r, n, color);
+        figure = Figure::createSphere(r, n, colorCoeffs);
     }
 
     else if (figType == "Cone")
     {
         double h = conf[figName]["height"].as_double_or_die();
         int n = conf[figName]["n"].as_int_or_die();
-        figure = Figure::createCone(h, n, color);
+        figure = Figure::createCone(h, n, colorCoeffs);
     }
 
     else if (figType == "Cylinder")
     {
         double h = conf[figName]["height"].as_double_or_die();
         int n = conf[figName]["n"].as_int_or_die();
-        figure = Figure::createCylinder(h, n, color);
+        figure = Figure::createCylinder(h, n, colorCoeffs);
     }
 
     else if (figType == "Torus")
@@ -889,7 +929,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         double R = conf[figName]["R"].as_double_or_die();
         int n = conf[figName]["n"].as_int_or_die();
         int m = conf[figName]["m"].as_int_or_die();
-        figure = Figure::createTorus(r, R, n, m, color);
+        figure = Figure::createTorus(r, R, n, m, colorCoeffs);
     }
 
     else if (figType == "3DLSystem")
@@ -902,12 +942,12 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         input_stream >> l_system;
         input_stream.close();
 
-        figure = Figure::LSystem3DToFigure(l_system, color);
+        figure = Figure::LSystem3DToFigure(l_system, colorCoeffs);
     }
 
     else if (figType == "BuckyBall" || figType == "FractalBuckyBall")
     {
-        figure = Figure::createBuckyBall(color);
+        figure = Figure::createBuckyBall(colorCoeffs);
     }
 
     figure.applyTransformation(transformMatrix);
