@@ -77,11 +77,14 @@ namespace img
 			 */
 			~Color();
 
-            // Element-wise addition of 2 colors (none of the components can go above 0)
-            void add(Color &color);
+            // Element-wise addition of 2 colors (none of the components can go above 255)
+            static Color add(Color &color1, Color &color2);
 
             // Element-wise multiplication of 2 colors
-            void multiply(Color &color);
+            static Color multiply(Color &color1, Color &color2);
+
+            // Multiply each element by a factor
+            static Color multiply(Color &color, double &factor);
 	};
 
 	/**

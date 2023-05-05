@@ -14,6 +14,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
 
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
+    Matrix eyeMat = Transformations::eyePointTrans(eyePoint);
 
     // ?=============== Lights ===============? //
     Lights3D lights;
@@ -26,16 +27,37 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
         {
             string lightName = "Light" + to_string(i);
 
-            vector<double> ambientLightTuple = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
-            Color ambientLight = Color(ambientLightTuple);
+            vector<double> ambientLight;
+            vector<double> diffuseLight = {0, 0, 0};
+            vector<double> specularLight = {0, 0, 0};
 
-            vector<double> diffuseLightTuple = conf[lightName]["diffuseLight"].as_double_tuple_or_default({0, 0, 0});
-            Color diffuseLight = Color(diffuseLightTuple);
+            ambientLight = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
 
-            vector<double> specularLightTuple = conf[lightName]["specularLight"].as_double_tuple_or_default({0, 0, 0});
-            Color specularLight = Color(specularLightTuple);
+            if (conf[lightName]["diffuseLight"].as_double_tuple_if_exists(diffuseLight))
+            {
+                bool inf = conf[lightName]["infinity"].as_bool_or_die();
 
-            lights.emplace_back(ambientLight, diffuseLight, specularLight);
+                if (inf)
+                {
+                    vector<double> ldTuple = conf[lightName]["direction"].as_double_tuple_or_die();
+                    Vector3D ldVector = Vector3D::vector(ldTuple[0], ldTuple[1], ldTuple[2]) * eyeMat;
+                    ldVector.normalise();
+
+                    lights.emplace_back(ambientLight, diffuseLight, specularLight, ldVector);
+                }
+                else
+                {
+
+                }
+            }
+            else if (conf[lightName]["specularLight"].as_double_tuple_if_exists(specularLight))
+            {
+
+            }
+            else
+            {
+                lights.emplace_back(ambientLight, diffuseLight, specularLight);
+            }
         }
     }
     else
@@ -74,7 +96,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     }
 
     // ?==== Eye Point Transformation and Projection ====? //
-    Transformations::applyTransformation(figures, Transformations::eyePointTrans(eyePoint));
+    Transformations::applyTransformation(figures, eyeMat);
     Lines2D lines = Transformations::doProjection(figures);
 
     // ?============== Draw Image ==============? //
@@ -152,8 +174,13 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
 
     // *********** Lights ***********
 
-    Light ambient = Light::totalAmbient(lights);
-    ambientReflection.multiply(ambient.ambientLight);
+    w.normalise();
+    Light total = Light::totalLight(lights, w);
+
+    Color ambientFinal = Color::multiply(total.ambientLight, ambientReflection);
+    Color diffuseFinal = Color::multiply(total.diffuseLight, diffuseReflection);
+
+    Color totalColor = Color::add(ambientFinal, diffuseFinal);
 
     // ******************************
 
@@ -187,7 +214,7 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
             if (z < zbuf[i][yI])
             {
                 zbuf[i][yI] = z;
-                image(i, yI) = ambientReflection;
+                image(i, yI) = totalColor;
             }
         }
     }

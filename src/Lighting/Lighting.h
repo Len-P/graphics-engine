@@ -23,24 +23,19 @@ namespace Lighting
             Color diffuseLight;
             Color specularLight;
 
-            Light(); // White ambient light, nothing else
-            Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight);
+            bool inf = true;
+            Vector3D ldVector; // The direction in which the light travels
 
-            static Light totalAmbient(Lights3D &lights);
-    };
-
-    class InfLight: public Light
-    {
-        public:
-            // The direction in which the light travels
-            Vector3D ldVector;
-    };
-
-    class PointLight: public Light
-    {
-        public:
             Vector3D location;
-            double spotAngle;
+            double spotAngle{};
+
+            Light(); // White ambient light, nothing else
+            Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
+            Light(vector<double> &aAmbientLight, vector<double> &aDiffuseLight, vector<double> &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
+
+            virtual ~Light() = default;
+
+            static Light totalLight(Lights3D lights, Vector3D &normal);
     };
 
 }

@@ -423,7 +423,7 @@ Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, r
     // Bottom and top faces
     vector<int> bottomFaceIndexes;
     vector<int> topFaceIndexes;
-    for(int i = n-1; i >= 0; i--)
+    for(int i = 0; i < n; i++)
     {
         bottomFaceIndexes.emplace_back(i);
         topFaceIndexes.emplace_back(i + n);

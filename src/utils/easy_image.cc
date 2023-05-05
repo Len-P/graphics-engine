@@ -130,27 +130,40 @@ img::Color::~Color()
 {
 }
 
-void img::Color::add(img::Color &color)
+img::Color img::Color::add(img::Color &color1, img::Color &color2)
 {
-    red += color.red;
-    if (red > 1) {
-        red = 1;
-    }
-    green += color.green;
-    if (green > 1) {
-        green = 1;
-    }
-    blue += color.blue;
-    if (blue > 1) {
-        blue = 1;
-    }
+    int r = (int) color1.red + (int) color2.red;
+    r = (r > 255) ? 255 : r;
+
+    int g = (int) color1.green + (int) color2.green;
+    g = (g > 255) ? 255 : g;
+
+    int b = (int) color1.blue + (int) color2.blue;
+    b = (b > 255) ? 255 : b;
+
+    vector<double> rgb = {(double) r/255, (double) g/255, (double) b/255};
+
+    return Color(rgb);
 }
 
-void img::Color::multiply(img::Color &color)
+img::Color img::Color::multiply(img::Color &color1, img::Color &color2)
 {
-    red *= color.red;
-    green *= color.green;
-    blue *= color.blue;
+    double r = (double) color1.red * (double) color2.red / 65025;
+    double g = (double) color1.green * (double) color2.green / 65025;
+    double b = (double) color1.blue * (double) color2.blue / 65025;
+    vector<double> rgb = {r, g, b};
+
+    return Color(rgb);
+}
+
+img::Color img::Color::multiply(img::Color &color, double &factor)
+{
+    double r = (double) color.red * factor / 255;
+    double g = (double) color.green * factor / 255;
+    double b = (double) color.blue * factor / 255;
+    vector<double> rgb = {r, g, b};
+
+    return Color(rgb);
 }
 
 img::UnsupportedFileTypeException::UnsupportedFileTypeException(std::string const& msg) :
