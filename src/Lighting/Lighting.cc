@@ -41,28 +41,32 @@ namespace Lighting
             {
                 string lightName = "Light" + to_string(i);
 
-                vector<double> ambientLight;
+                vector<double> ambientLight = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
                 vector<double> diffuseLight = {0, 0, 0};
                 vector<double> specularLight = {0, 0, 0};
 
-                ambientLight = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
+                bool diffuse = conf[lightName]["diffuseLight"].as_double_tuple_if_exists(diffuseLight);
+                bool specular = conf[lightName]["specularLight"].as_double_tuple_if_exists(specularLight);
 
-                if (conf[lightName]["diffuseLight"].as_double_tuple_if_exists(diffuseLight))
+                Light light = Light(ambientLight, diffuseLight, specularLight);
+
+                if (diffuse || specular)
                 {
-                    bool inf = conf[lightName]["infinity"].as_bool_or_die();
+                    light.diffuse = diffuse;
+                    light.specular = specular;
 
-                    if (inf)
+                    if (conf[lightName]["infinity"].as_bool_or_die())
                     {
                         // Infinite diffuse light
                         vector<double> ldTuple = conf[lightName]["direction"].as_double_tuple_or_die();
                         Vector3D ldVector = Vector3D::vector(ldTuple[0], ldTuple[1], ldTuple[2]) * eyeMat;
                         ldVector.normalise();
+                        light.ldVector = ldVector;
 
-                        lights.emplace_back(ambientLight, diffuseLight, specularLight, ldVector);
+                        lights.emplace_back(light);
                     }
                     else
                     {
-                        Light light = Light(ambientLight, diffuseLight, specularLight);
                         light.inf = false;
                         vector<double> locationTuple = conf[lightName]["location"].as_double_tuple_or_die();
                         Vector3D location = Vector3D::point(locationTuple[0], locationTuple[1], locationTuple[2]) * eyeMat;
@@ -83,10 +87,6 @@ namespace Lighting
                             lights.emplace_back(light);
                         }
                     }
-                }
-                else if (conf[lightName]["specularLight"].as_double_tuple_if_exists(specularLight))
-                {
-
                 }
                 else
                 {
@@ -131,16 +131,17 @@ namespace Lighting
     {
         Color total = color;
         Color diffuse = Color();
+        Color specular = Color();
+
+        // P in eye coordinates
+        double Px = (dx - x) * Pz / d;
+        double Py = (dy - y) * Pz / d;
+        Vector3D P = Vector3D::point(Px, Py, Pz);
 
         for (auto &light : lights)
         {
             if (!light.inf)
             {
-                // P in eye coordinates
-                double Px = (dx - x) * Pz / d;
-                double Py = (dy - y) * Pz / d;
-                Vector3D P = Vector3D::point(Px, Py, Pz);
-
                 Vector3D l = light.location - P;
                 l.normalise();
 
@@ -162,14 +163,56 @@ namespace Lighting
                 else
                 {
                     // Point light
-                    Color lightPoint = Color::multiply(light.diffuseLight, cos);
-                    diffuse = Color::add(lightPoint, diffuse);
+                    if (light.diffuse)
+                    {
+                        Color lightPoint = Color::multiply(light.diffuseLight, cos);
+                        diffuse = Color::add(lightPoint, diffuse);
+                    }
+
+                    if (light.specular)
+                    {
+                        Vector3D r = 2 * normal * cos - l;
+                        r.normalise();
+
+                        Vector3D camera = -P;
+                        camera.normalise();
+
+                        double cosB = Vector3D::dot(r, camera); // -P = camera
+                        cosB = (cosB < 0) ? 0 : cosB;
+
+                        double specularFactor = pow(cosB, reflectionCoeff);
+
+                        Color lightPoint = Color::multiply(light.specularLight, specularFactor);
+                        specular = Color::add(lightPoint, specular);
+                    }
                 }
+            }
+            else if (light.inf && !light.spot && light.specular)
+            {
+                double cos = Vector3D::dot(-light.ldVector, normal);
+                cos = (cos < 0) ? 0 : cos;
+
+                Vector3D r = 2 * normal * cos + light.ldVector;
+                r.normalise();
+
+                Vector3D camera = -P;
+                camera.normalise();
+
+                double cosB = Vector3D::dot(r, camera); // -P = camera
+                cosB = (cosB < 0) ? 0 : cosB;
+
+                double specularFactor = pow(cosB, reflectionCoeff);
+
+                Color lightPoint = Color::multiply(light.specularLight, specularFactor);
+                specular = Color::add(lightPoint, specular);
             }
         }
 
         diffuse = Color::multiply(diffuse, diffuseReflection);
+        specular = Color::multiply(specular, specularReflection);
+
         total = Color::add(total, diffuse);
+        total = Color::add(total, specular);
 
         return total;
     }

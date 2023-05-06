@@ -28,8 +28,8 @@ X: Niet werkend of niet geïmplementeerd
 |   | View Frustum              |        |
 | 7 | Ambient licht             | V      |
 |   | Diffuus licht (oneindig)  | V      |
-|   | Diffuus licht (puntbron)  |        |
-|   | Speculair licht           |        |
+|   | Diffuus licht (puntbron)  | V      |
+|   | Speculair licht           | V      |
 | 8 | Schaduw                   |        |
 |   | Texture mapping           |        |
 | 9 | Bollen en cylinders       |        |

@@ -15,6 +15,7 @@ using namespace img;
 using std::list;
 using std::string;
 using std::to_string;
+using std::pow;
 
 namespace Lighting
 {
@@ -36,6 +37,9 @@ namespace Lighting
 
             bool spot = false; // True for spotlights
             double spotAngle{}; // In radians
+
+            bool diffuse = false;
+            bool specular = false;
 
             Light(); // White ambient light, nothing else
             Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
