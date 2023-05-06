@@ -5,7 +5,7 @@
 // ?========================================== Parse Ini ==========================================? //
 EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
 {
-    // ?============== General ==============? //
+    // General
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
@@ -16,39 +16,14 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
 
-    // ?============== Figures ==============? //
-    Figures3D figures;
+    // Figures
+    Figures3D figures = Figure::parseFigures(conf, true, false);
 
-    for (int i = 0; i < nrFigures; i++)
-    {
-        string figName = "Figure" + to_string(i);
-
-        Figure figure = Figure::generateFigure(conf, figName, false);
-
-        // Fractals or normal functionality
-        string figType = conf[figName]["type"].as_string_or_die();
-        int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
-
-        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
-        {
-            double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
-            Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
-        }
-        else if (figType == "MengerSponge")
-        {
-            Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
-        }
-        else
-        {
-            figures.emplace_back(figure);
-        }
-    }
-
-    // ?==== Eye Point Transformation and Projection ====? //
+    // Eye Point Transformation and Projection
     Transformations::applyTransformation(figures, Transformations::eyePointTrans(eyePoint));
     Lines2D lines = Transformations::doProjection(figures);
 
-    // ?============== Draw Image ==============? //
+    // Draw Image
     return LSystem2D::Line2D::draw2DLines(lines, size, backgroundColor, ZBuffering);
 }
 
@@ -188,6 +163,40 @@ void Figure3D::Figure::splitLine3(Vector3D &A, Vector3D &B)
 }
 
 // ?=========================================== Static Methods ===========================================? //
+Figure3D::Figures3D Figure3D::Figure::parseFigures(const Configuration &conf, const bool &triangulate, const bool &lighted)
+{
+    Figures3D figures;
+    int nrFigures = conf["General"]["nrFigures"].as_int_or_die();
+
+    for (int i = 0; i < nrFigures; i++)
+    {
+        string figName = "Figure" + to_string(i);
+
+        Figure figure = Figure::generateFigure(conf, figName, triangulate, lighted);
+
+        // Fractals or normal functionality
+        string figType = conf[figName]["type"].as_string_or_die();
+        int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
+
+        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
+        {
+            double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
+            Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
+        }
+        else if (figType == "MengerSponge")
+        {
+            Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
+        }
+        else
+        {
+            figures.emplace_back(figure);
+        }
+    }
+
+    return figures;
+}
+
+
 Figure3D::Figure Figure3D::Figure::createCube(reflectionCoeffs &colorCoeffs)
 {
     Vector3D p0 = Vector3D::point(1, 1, -1);

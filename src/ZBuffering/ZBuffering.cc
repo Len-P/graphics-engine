@@ -4,102 +4,27 @@
 
 EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
 {
-    // ?============== General ==============? //
+    // General
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
     Color backgroundColor = Color(backgroundColorTuple);
 
-    int nrFigures = conf["General"]["nrFigures"].as_int_or_die();
-
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
     Matrix eyeMat = Transformations::eyePointTrans(eyePoint);
 
-    // ?=============== Lights ===============? //
-    Lights3D lights;
+    // Lights
+    Lights3D lights = Light::parseLights(conf, lighted, eyeMat);
 
-    if (lighted)
-    {
-        int nrLights = conf["General"]["nrLights"].as_int_or_die();
+    // Figures
+    Figures3D figures = Figure::parseFigures(conf, true, lighted);
 
-        for (int i = 0; i < nrLights; i++)
-        {
-            string lightName = "Light" + to_string(i);
-
-            vector<double> ambientLight;
-            vector<double> diffuseLight = {0, 0, 0};
-            vector<double> specularLight = {0, 0, 0};
-
-            ambientLight = conf[lightName]["ambientLight"].as_double_tuple_or_default({0, 0, 0});
-
-            if (conf[lightName]["diffuseLight"].as_double_tuple_if_exists(diffuseLight))
-            {
-                bool inf = conf[lightName]["infinity"].as_bool_or_die();
-
-                if (inf)
-                {
-                    vector<double> ldTuple = conf[lightName]["direction"].as_double_tuple_or_die();
-                    Vector3D ldVector = Vector3D::vector(ldTuple[0], ldTuple[1], ldTuple[2]) * eyeMat;
-                    ldVector.normalise();
-
-                    lights.emplace_back(ambientLight, diffuseLight, specularLight, ldVector);
-                }
-                else
-                {
-
-                }
-            }
-            else if (conf[lightName]["specularLight"].as_double_tuple_if_exists(specularLight))
-            {
-
-            }
-            else
-            {
-                lights.emplace_back(ambientLight, diffuseLight, specularLight);
-            }
-        }
-    }
-    else
-    {
-        // Add white ambient light
-        // This is needed for old functionality where figures only have 1 (ambient) color and no lights in the .ini
-        lights.emplace_back();
-    }
-
-    // ?============== Figures ==============? //
-    Figures3D figures;
-
-    for (int i = 0; i < nrFigures; i++)
-    {
-        string figName = "Figure" + to_string(i);
-
-        Figure figure = Figure::generateFigure(conf, figName, true, lighted);
-
-        // Fractals or normal functionality
-        string figType = conf[figName]["type"].as_string_or_die();
-        int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
-
-        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
-        {
-            double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
-            Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
-        }
-        else if (figType == "MengerSponge")
-        {
-            Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
-        }
-        else
-        {
-            figures.emplace_back(figure);
-        }
-    }
-
-    // ?==== Eye Point Transformation and Projection ====? //
+    // Eye Point Transformation and Projection
     Transformations::applyTransformation(figures, eyeMat);
     Lines2D lines = Transformations::doProjection(figures);
 
-    // ?============== Draw Image ==============? //
+    // Draw Image
     return draw_zbuf_figures(figures, lines, size, backgroundColor, lights);
 }
 
@@ -156,7 +81,7 @@ EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines
     return image;
 }
 
-void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, Color ambientReflection, Color diffuseReflection, Color specularReflection, const double reflectionCoeff, Lights3D &lights)
+void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const Color &ambientReflection, const Color &diffuseReflection, const Color &specularReflection, const double reflectionCoeff, Lights3D &lights)
 {
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
@@ -172,17 +97,17 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
     double dzdx = w.x / (-d * k);
     double dzdy = w.y / (-d * k);
 
-    // *********** Lights ***********
+    // *********** Ambient and Inf Diffuse Lights ***********
 
     w.normalise();
-    Light total = Light::totalLight(lights, w);
+    Light total = Light::totalAmbientAndInfDiffuse(lights, w);
 
-    Color ambientFinal = Color::multiply(total.ambientLight, ambientReflection);
-    Color diffuseFinal = Color::multiply(total.diffuseLight, diffuseReflection);
+    total.ambientLight = Color::multiply(total.ambientLight, ambientReflection);
+    total.diffuseLight = Color::multiply(total.diffuseLight, diffuseReflection);
 
-    Color totalColor = Color::add(ambientFinal, diffuseFinal);
+    Color totalColor = Color::add(total.ambientLight, total.diffuseLight);
 
-    // ******************************
+    // ******************************************************
 
     double y_min = min(A_2D.y, min(B_2D.y, C_2D.y));
     double y_max = max(A_2D.y, max(B_2D.y, C_2D.y));
@@ -214,7 +139,7 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
             if (z < zbuf[i][yI])
             {
                 zbuf[i][yI] = z;
-                image(i, yI) = totalColor;
+                image(i, yI) = Light::totalColor(lights, w, diffuseReflection, specularReflection, reflectionCoeff, totalColor, i, yI, d, dx, dy, 1/z);
             }
         }
     }

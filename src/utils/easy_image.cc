@@ -130,7 +130,7 @@ img::Color::~Color()
 {
 }
 
-img::Color img::Color::add(img::Color &color1, img::Color &color2)
+img::Color img::Color::add(const img::Color &color1, const img::Color &color2)
 {
     int r = (int) color1.red + (int) color2.red;
     r = (r > 255) ? 255 : r;
@@ -146,7 +146,7 @@ img::Color img::Color::add(img::Color &color1, img::Color &color2)
     return Color(rgb);
 }
 
-img::Color img::Color::multiply(img::Color &color1, img::Color &color2)
+img::Color img::Color::multiply(const img::Color &color1, const img::Color &color2)
 {
     double r = (double) color1.red * (double) color2.red / 65025;
     double g = (double) color1.green * (double) color2.green / 65025;
@@ -156,7 +156,7 @@ img::Color img::Color::multiply(img::Color &color1, img::Color &color2)
     return Color(rgb);
 }
 
-img::Color img::Color::multiply(img::Color &color, double &factor)
+img::Color img::Color::multiply(const img::Color &color, const double &factor)
 {
     double r = (double) color.red * factor / 255;
     double g = (double) color.green * factor / 255;

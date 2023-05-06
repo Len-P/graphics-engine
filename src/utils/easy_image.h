@@ -78,13 +78,13 @@ namespace img
 			~Color();
 
             // Element-wise addition of 2 colors (none of the components can go above 255)
-            static Color add(Color &color1, Color &color2);
+            static Color add(const Color &color1, const Color &color2);
 
             // Element-wise multiplication of 2 colors
-            static Color multiply(Color &color1, Color &color2);
+            static Color multiply(const Color &color1, const Color &color2);
 
             // Multiply each element by a factor
-            static Color multiply(Color &color, double &factor);
+            static Color multiply(const Color &color, const double &factor);
 	};
 
 	/**

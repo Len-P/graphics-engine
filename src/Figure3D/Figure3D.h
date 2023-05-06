@@ -77,6 +77,8 @@ namespace Figure3D
             void splitLine3(Vector3D &A, Vector3D &B);
 
             // ?============== Static Methods ==============? //
+            static Figures3D parseFigures(const Configuration &conf, const bool &triangulate, const bool &lighted);
+
             static Figure createCube(reflectionCoeffs &colorCoeffs);
             static Figure createTetrahedron(reflectionCoeffs &colorCoeffs);
             static Figure createOctahedron(reflectionCoeffs &colorCoeffs);

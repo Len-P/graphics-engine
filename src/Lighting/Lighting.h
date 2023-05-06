@@ -1,14 +1,20 @@
 #ifndef ENGINE_LIGHTING_H
 #define ENGINE_LIGHTING_H
+#define _USE_MATH_DEFINES
 
+#include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
 #include "../utils/vector3d.h"
 #include <list>
+#include <cmath>
 
 
 
+using namespace ini;
 using namespace img;
 using std::list;
+using std::string;
+using std::to_string;
 
 namespace Lighting
 {
@@ -23,11 +29,13 @@ namespace Lighting
             Color diffuseLight;
             Color specularLight;
 
-            bool inf = true;
+            bool inf = true; // False for point lights
             Vector3D ldVector; // The direction in which the light travels
 
             Vector3D location;
-            double spotAngle{};
+
+            bool spot = false; // True for spotlights
+            double spotAngle{}; // In radians
 
             Light(); // White ambient light, nothing else
             Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
@@ -35,7 +43,11 @@ namespace Lighting
 
             virtual ~Light() = default;
 
-            static Light totalLight(Lights3D lights, Vector3D &normal);
+            static Lights3D parseLights(const Configuration &conf, const bool &lighted, const Matrix &eyeMat);
+
+            static Light totalAmbientAndInfDiffuse(Lights3D &lights, const Vector3D &normal);
+
+            static Color totalColor(Lights3D &lights, const Vector3D &normal, const Color &diffuseReflection, const Color &specularReflection, const double &reflectionCoeff, const Color &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz);
     };
 
 }
