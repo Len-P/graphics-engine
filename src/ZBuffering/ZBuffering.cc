@@ -12,6 +12,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
 
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
+    std::cout << eyeCoord[0] << " , " << eyeCoord[1] << " , " << eyeCoord[2] << std::endl;
     Matrix eyeMat = Transformations::eyePointTrans(eyePoint);
 
     // Lights
@@ -20,15 +21,21 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     // Figures
     Figures3D figures = Figure::parseFigures(conf, true, lighted);
 
+    // Calculate shadow masks if applicable
+    for (auto &light : lights)
+    {
+        light.calculateShadowMask(figures);
+    }
+
     // Eye Point Transformation and Projection
     Transformations::applyTransformation(figures, eyeMat);
     Lines2D lines = Transformations::doProjection(figures);
 
     // Draw Image
-    return draw_zbuf_figures(figures, lines, size, backgroundColor, lights);
+    return draw_zbuf_figures(figures, lines, size, backgroundColor, lights, eyeMat);
 }
 
-EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor, Lights3D &lights)
+EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor, Lights3D &lights, Matrix &eyeMat)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -74,14 +81,14 @@ EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines
             Vector3D B = fig.points[face.pointIndexes[1]];
             Vector3D C = fig.points[face.pointIndexes[2]];
 
-            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.ambientReflection, fig.diffuseReflection, fig.specularReflection, fig.reflectionCoefficient, lights);
+            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.ambientReflection, fig.diffuseReflection, fig.specularReflection, fig.reflectionCoefficient, lights, eyeMat);
         }
     }
 
     return image;
 }
 
-void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const Color &ambientReflection, const Color &diffuseReflection, const Color &specularReflection, const double reflectionCoeff, Lights3D &lights)
+void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const Color &ambientReflection, const Color &diffuseReflection, const Color &specularReflection, const double reflectionCoeff, Lights3D &lights, Matrix &eyeMat)
 {
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
@@ -125,9 +132,9 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
         double ACxR = -numeric_limits<double>::infinity();
         double BCxR = -numeric_limits<double>::infinity();
 
-        calculateIntermediateX_LandR(A_2D, B_2D, yI, ABxL, ABxR);
-        calculateIntermediateX_LandR(C_2D, A_2D, yI, ACxL, ACxR);
-        calculateIntermediateX_LandR(B_2D, C_2D, yI, BCxL, BCxR);
+        LSystem2D::Line2D::calculateIntermediateX_LandR(A_2D, B_2D, yI, ABxL, ABxR);
+        LSystem2D::Line2D::calculateIntermediateX_LandR(C_2D, A_2D, yI, ACxL, ACxR);
+        LSystem2D::Line2D::calculateIntermediateX_LandR(B_2D, C_2D, yI, BCxL, BCxR);
 
         int xL = lround(min(ABxL, min(BCxL, ACxL)) + 0.5);
         int xR = lround(max(ABxR, max(BCxR, ACxR)) - 0.5);
@@ -138,19 +145,18 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
 
             if (z < zbuf[i][yI])
             {
+                if (i == 490 && yI == 600)
+                {
+                    int xkaka =5;
+                }
+
+                if (i == 350 && yI == 600)
+                {
+                    int xkakdfa =5;
+                }
                 zbuf[i][yI] = z;
-                image(i, yI) = Light::totalColor(lights, w, diffuseReflection, specularReflection, reflectionCoeff, totalColor, i, yI, d, dx, dy, 1/z);
+                image(i, yI) = Light::totalColor(lights, w, diffuseReflection, specularReflection, reflectionCoeff, totalColor, i, yI, d, dx, dy, 1/z, eyeMat);
             }
         }
-    }
-}
-
-void ZBuffering::calculateIntermediateX_LandR(const Point2D &P, const Point2D &Q, const int &yI, double &PQxL, double &PQxR)
-{
-    if ( ( (double) yI - P.y) * ( (double) yI - Q.y) <= 0 && P.y != Q.y )
-    {
-        double xI = Q.x + (P.x - Q.x) * ( (double) yI - Q.y) / (P.y - Q.y);
-        PQxL = min(PQxL, xI);
-        PQxR = max(PQxR, xI);
     }
 }

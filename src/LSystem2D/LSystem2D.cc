@@ -118,6 +118,16 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, 
     return image;
 }
 
+void LSystem2D::Line2D::calculateIntermediateX_LandR(const Point2D &P, const Point2D &Q, const int &yI, double &PQxL, double &PQxR)
+{
+    if ( ( (double) yI - P.y) * ( (double) yI - Q.y) <= 0 && P.y != Q.y )
+    {
+        double xI = Q.x + (P.x - Q.x) * ( (double) yI - Q.y) / (P.y - Q.y);
+        PQxL = min(PQxL, xI);
+        PQxR = max(PQxR, xI);
+    }
+}
+
 // ?=========================================== Functions ===========================================? //
 void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, LSystem2D::Point2D &startPoint, LSystem2D::Point2D &endPoint, stack<tuple<LSystem2D::Point2D, double>> &stack, const Color &color)
 {

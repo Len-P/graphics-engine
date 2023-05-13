@@ -4,7 +4,11 @@
 
 #include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
+#include "../utils/ColorDouble.h"
 #include "../utils/vector3d.h"
+#include "../Figure3D/Figure3D.h"
+#include "../ZBuffering/ZBuffer.h"
+#include "../Figure3D/Transformations.h"
 #include <list>
 #include <cmath>
 
@@ -12,10 +16,14 @@
 
 using namespace ini;
 using namespace img;
+using namespace Figure3D;
 using std::list;
 using std::string;
 using std::to_string;
 using std::pow;
+using std::floor;
+using std::ceil;
+using std::abs;
 
 namespace Lighting
 {
@@ -41,6 +49,16 @@ namespace Lighting
             bool diffuse = false;
             bool specular = false;
 
+            bool shadows = false;
+            ZBuffer shadowMask = ZBuffer(1, 1);
+            int maskSize{};
+            Matrix eyeMat;
+
+            // Values for looking up a point in the shadowMask
+            double d{};
+            double dx{};
+            double dy{};
+
             Light(); // White ambient light, nothing else
             Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
             Light(vector<double> &aAmbientLight, vector<double> &aDiffuseLight, vector<double> &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
@@ -51,7 +69,9 @@ namespace Lighting
 
             static Light totalAmbientAndInfDiffuse(Lights3D &lights, const Vector3D &normal);
 
-            static Color totalColor(Lights3D &lights, const Vector3D &normal, const Color &diffuseReflection, const Color &specularReflection, const double &reflectionCoeff, const Color &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz);
+            static Color totalColor(Lights3D &lights, const Vector3D &normal, const Color &diffuseReflection, const Color &specularReflection, const double &reflectionCoeff, const Color &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz, Matrix &eyeMat);
+
+            void calculateShadowMask(Figures3D figures);
     };
 
 }

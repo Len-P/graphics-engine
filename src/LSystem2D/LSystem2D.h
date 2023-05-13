@@ -61,6 +61,9 @@ namespace LSystem2D
 
             // Draws all lines from a list of lines on an image. Returns image. Image parameters are size and background color.
             static EasyImage draw2DLines(vector<Line2D> &lines, int size, const Color &backgroundColor, const bool ZBuffering = false);
+
+            // Used in ZBuffering
+            static void calculateIntermediateX_LandR(const Point2D &P, const Point2D &Q, const int &yI, double &PQxL, double &PQxR);
     };
 
     using Lines2D = vector<Line2D>;

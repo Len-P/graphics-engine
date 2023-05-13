@@ -26,7 +26,7 @@ set(engine_sources
 		src/ZBuffering/ZBuffering.cc src/ZBuffering/ZBuffering.h
 		src/Fractal3D/Fractal3D.cc src/Fractal3D/Fractal3D.h
 		src/Figure3D/Transformations.cc src/Figure3D/Transformations.h
-		src/Lighting/Lighting.cc src/Lighting/Lighting.h)
+		src/Lighting/Lighting.cc src/Lighting/Lighting.h src/utils/ColorDouble.cc src/utils/ColorDouble.h)
 
 ############################################################
 # Create an executable
