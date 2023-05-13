@@ -7,13 +7,13 @@ namespace Lighting
 
     Light::Light()
     {
-        ambientLight = Color(255, 255, 255);
-        diffuseLight = Color();
-        specularLight = Color();
+        ambientLight = ColorDouble(1, 1, 1);
+        diffuseLight = ColorDouble();
+        specularLight = ColorDouble();
         ldVector = Vector3D::vector(0, 0, 0);
     }
 
-    Light::Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector)
+    Light::Light(ColorDouble &aAmbientLight, ColorDouble &aDiffuseLight, ColorDouble &aSpecularLight, const Vector3D &aLdVector)
     {
         ambientLight = aAmbientLight;
         diffuseLight = aDiffuseLight;
@@ -23,9 +23,9 @@ namespace Lighting
 
     Light::Light(vector<double> &aAmbientLight, vector<double> &aDiffuseLight, vector<double> &aSpecularLight, const Vector3D &aLdVector)
     {
-        ambientLight = Color(aAmbientLight);
-        diffuseLight = Color(aDiffuseLight);
-        specularLight = Color(aSpecularLight);
+        ambientLight = ColorDouble(aAmbientLight);
+        diffuseLight = ColorDouble(aDiffuseLight);
+        specularLight = ColorDouble(aSpecularLight);
         ldVector = aLdVector;
     }
 
@@ -120,37 +120,47 @@ namespace Lighting
 
     Light Light::totalAmbientAndInfDiffuse(Lights3D &lights, const Vector3D &normal)
     {
-        Color ambient = Color();
-        Color diffuse = Color();
-        Color specular = Color();
+        ColorDouble ambient = ColorDouble();
+        ColorDouble diffuse = ColorDouble();
+        ColorDouble specular = ColorDouble();
 
         for (auto &light : lights)
         {
-            ambient = Color::add(light.ambientLight, ambient);
+            ambient = ColorDouble::add(light.ambientLight, ambient);
 
             if (light.inf)
             {
                 double cos = Vector3D::dot(-light.ldVector, normal);
                 cos = (cos < 0) ? 0 : cos;
 
-                Color lightDif = Color::multiply(light.diffuseLight, cos);
-                diffuse = Color::add(lightDif, diffuse);
+                ColorDouble lightDif = ColorDouble::multiply(light.diffuseLight, cos);
+                diffuse = ColorDouble::add(lightDif, diffuse);
             }
         }
 
         return {ambient, diffuse, specular};
     }
 
-    Color Light::totalColor(Lights3D &lights, const Vector3D &normal, const Color &diffuseReflection, const Color &specularReflection, const double &reflectionCoeff, const Color &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz, Matrix &eyeMat)
+    Color Light::totalColor(Lights3D &lights, const Vector3D &normal, const ColorDouble &diffuseReflection, const ColorDouble &specularReflection, const double &reflectionCoeff, const ColorDouble &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz, Matrix &eyeMat)
     {
-        Color total = color;
-        Color diffuse = Color();
-        Color specular = Color();
+        ColorDouble total = color;
+        ColorDouble diffuse = ColorDouble();
+        ColorDouble specular = ColorDouble();
 
         // P in eye coordinates
         double Px = (dx - x) * Pz / d;
         double Py = (dy - y) * Pz / d;
         Vector3D P = Vector3D::point(Px, Py, Pz);
+
+        if (x == 490 && y == 600)
+        {
+            int xkaka =5;
+        }
+
+        if (x == 350 && y == 600)
+        {
+            int xkakdfa =5;
+        }
 
         for (const auto &light : lights)
         {
@@ -170,8 +180,8 @@ namespace Lighting
                     if (cos > cosl)
                     {
                         double factor = (cos - cosl) / (1 - cosl);
-                        Color lightSpot = Color::multiply(light.diffuseLight, factor);
-                        diffuse = Color::add(lightSpot, diffuse);
+                        ColorDouble lightSpot = ColorDouble::multiply(light.diffuseLight, factor);
+                        diffuse = ColorDouble::add(lightSpot, diffuse);
                     }
                 }
                 else
@@ -215,8 +225,8 @@ namespace Lighting
 
                     if (light.diffuse && lit)
                     {
-                        Color lightPoint = Color::multiply(light.diffuseLight, cos);
-                        diffuse = Color::add(lightPoint, diffuse);
+                        ColorDouble lightPoint = ColorDouble::multiply(light.diffuseLight, cos);
+                        diffuse = ColorDouble::add(lightPoint, diffuse);
                     }
 
                     if (light.specular && lit)
@@ -232,8 +242,8 @@ namespace Lighting
 
                         double specularFactor = pow(cosB, reflectionCoeff);
 
-                        Color lightPoint = Color::multiply(light.specularLight, specularFactor);
-                        specular = Color::add(lightPoint, specular);
+                        ColorDouble lightPoint = ColorDouble::multiply(light.specularLight, specularFactor);
+                        specular = ColorDouble::add(lightPoint, specular);
                     }
                 }
             }
@@ -253,18 +263,18 @@ namespace Lighting
 
                 double specularFactor = pow(cosB, reflectionCoeff);
 
-                Color lightPoint = Color::multiply(light.specularLight, specularFactor);
-                specular = Color::add(lightPoint, specular);
+                ColorDouble lightPoint = ColorDouble::multiply(light.specularLight, specularFactor);
+                specular = ColorDouble::add(lightPoint, specular);
             }
         }
 
-        diffuse = Color::multiply(diffuse, diffuseReflection);
-        specular = Color::multiply(specular, specularReflection);
+        diffuse = ColorDouble::multiply(diffuse, diffuseReflection);
+        specular = ColorDouble::multiply(specular, specularReflection);
 
-        total = Color::add(total, diffuse);
-        total = Color::add(total, specular);
+        total = ColorDouble::add(total, diffuse);
+        total = ColorDouble::add(total, specular);
 
-        return total;
+        return ColorDouble::getIntColor(total);
     }
 
     void Light::calculateShadowMask(Figures3D figures)

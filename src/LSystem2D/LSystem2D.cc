@@ -9,12 +9,12 @@ EasyImage LSystem2D::parseIni(const Configuration &conf)
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(backgroundColorTuple);
+    ColorDouble backgroundColor = ColorDouble(backgroundColorTuple);
 
     string inputFile = conf["2DLSystem"]["inputfile"].as_string_or_die();
 
     vector<double> colorTuple = conf["2DLSystem"]["color"].as_double_tuple_or_die();
-    Color color = Color(colorTuple);
+    ColorDouble color = ColorDouble(colorTuple);
 
     // Create 2D LSystem from input file
     LParser::LSystem2D l_system;
@@ -35,7 +35,7 @@ LSystem2D::Point2D::Point2D(double aX, double aY, double aZ)
     z = aZ;
 }
 
-LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, double aZ0, double aZ1)
+LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const ColorDouble &aColor, double aZ0, double aZ1)
 {
     p1 = aP1;
     p2 = aP2;
@@ -45,7 +45,7 @@ LSystem2D::Line2D::Line2D(Point2D &aP1, Point2D &aP2, const Color &aColor, doubl
 }
 
 // ?=========================================== Static Methods ===========================================? //
-EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, const Color &backgroundColor, const bool ZBuffering)
+EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, const ColorDouble &backgroundColor, const bool ZBuffering)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -94,7 +94,7 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, 
     image_y = lround(image_y);
 
     // Create image object and Z-Buffer
-    EasyImage image((int) image_x, (int) image_y, backgroundColor);
+    EasyImage image((int) image_x, (int) image_y, ColorDouble::getIntColor(backgroundColor));
     ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
 
     // Draw all lines on the image
@@ -107,11 +107,11 @@ EasyImage LSystem2D::Line2D::draw2DLines(vector<Line2D> &lines, const int size, 
 
         if (ZBuffering)
         {
-            image.draw_zbuf_line(buffer, x0, y0, line.z0, x1, y1, line.z1, line.color);
+            image.draw_zbuf_line(buffer, x0, y0, line.z0, x1, y1, line.z1, ColorDouble::getIntColor(line.color));
         }
         else
         {
-            image.draw_line(x0, y0, x1, y1, line.color);
+            image.draw_line(x0, y0, x1, y1, ColorDouble::getIntColor(line.color));
         }
     }
 
@@ -129,7 +129,7 @@ void LSystem2D::Line2D::calculateIntermediateX_LandR(const Point2D &P, const Poi
 }
 
 // ?=========================================== Functions ===========================================? //
-void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, LSystem2D::Point2D &startPoint, LSystem2D::Point2D &endPoint, stack<tuple<LSystem2D::Point2D, double>> &stack, const Color &color)
+void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const unsigned int maxIter, double &currentAngle, const LParser::LSystem2D &l_system, Lines2D &lines, LSystem2D::Point2D &startPoint, LSystem2D::Point2D &endPoint, stack<tuple<LSystem2D::Point2D, double>> &stack, const ColorDouble &color)
 {
     const double angle = l_system.get_angle() * M_PI/180;
 
@@ -183,7 +183,7 @@ void LSystem2D::recursiveLSystem(const string &str, unsigned int iter, const uns
 
 }
 
-LSystem2D::Lines2D LSystem2D::LSystemToLines2D(const LParser::LSystem2D &l_system, const Color &color)
+LSystem2D::Lines2D LSystem2D::LSystemToLines2D(const LParser::LSystem2D &l_system, const ColorDouble &color)
 {
     // Parse .L2D file
     const string &initiator = l_system.get_initiator();

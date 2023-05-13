@@ -8,11 +8,10 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(backgroundColorTuple);
+    ColorDouble backgroundColor = ColorDouble(backgroundColorTuple);
 
     vector<double> eyeCoord = conf["General"]["eye"].as_double_tuple_or_die();
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
-    std::cout << eyeCoord[0] << " , " << eyeCoord[1] << " , " << eyeCoord[2] << std::endl;
     Matrix eyeMat = Transformations::eyePointTrans(eyePoint);
 
     // Lights
@@ -35,7 +34,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     return draw_zbuf_figures(figures, lines, size, backgroundColor, lights, eyeMat);
 }
 
-EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const Color &backgroundColor, Lights3D &lights, Matrix &eyeMat)
+EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const ColorDouble &backgroundColor, Lights3D &lights, Matrix &eyeMat)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -70,7 +69,7 @@ EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines
     image_y = lround(image_y);
 
     // Create image object and Z-Buffer
-    EasyImage image((int) image_x, (int) image_y, backgroundColor);
+    EasyImage image((int) image_x, (int) image_y, ColorDouble::getIntColor(backgroundColor));
     ZBuffer buffer = ZBuffer((int) image_x, (int) image_y);
 
     for (auto &fig : figures)
@@ -88,7 +87,7 @@ EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines
     return image;
 }
 
-void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const Color &ambientReflection, const Color &diffuseReflection, const Color &specularReflection, const double reflectionCoeff, Lights3D &lights, Matrix &eyeMat)
+void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const ColorDouble &ambientReflection, const ColorDouble &diffuseReflection, const ColorDouble &specularReflection, const double reflectionCoeff, Lights3D &lights, Matrix &eyeMat)
 {
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
@@ -109,10 +108,10 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
     w.normalise();
     Light total = Light::totalAmbientAndInfDiffuse(lights, w);
 
-    total.ambientLight = Color::multiply(total.ambientLight, ambientReflection);
-    total.diffuseLight = Color::multiply(total.diffuseLight, diffuseReflection);
+    total.ambientLight = ColorDouble::multiply(total.ambientLight, ambientReflection);
+    total.diffuseLight = ColorDouble::multiply(total.diffuseLight, diffuseReflection);
 
-    Color totalColor = Color::add(total.ambientLight, total.diffuseLight);
+    ColorDouble totalColor = ColorDouble::add(total.ambientLight, total.diffuseLight);
 
     // ******************************************************
 
@@ -145,15 +144,6 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
 
             if (z < zbuf[i][yI])
             {
-                if (i == 490 && yI == 600)
-                {
-                    int xkaka =5;
-                }
-
-                if (i == 350 && yI == 600)
-                {
-                    int xkakdfa =5;
-                }
                 zbuf[i][yI] = z;
                 image(i, yI) = Light::totalColor(lights, w, diffuseReflection, specularReflection, reflectionCoeff, totalColor, i, yI, d, dx, dy, 1/z, eyeMat);
             }

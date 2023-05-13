@@ -34,9 +34,9 @@ namespace Lighting
     class Light
     {
         public:
-            Color ambientLight;
-            Color diffuseLight;
-            Color specularLight;
+            ColorDouble ambientLight;
+            ColorDouble diffuseLight;
+            ColorDouble specularLight;
 
             bool inf = true; // False for point lights
             Vector3D ldVector; // The direction in which the light travels
@@ -60,7 +60,7 @@ namespace Lighting
             double dy{};
 
             Light(); // White ambient light, nothing else
-            Light(Color &aAmbientLight, Color &aDiffuseLight, Color &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
+            Light(ColorDouble &aAmbientLight, ColorDouble &aDiffuseLight, ColorDouble &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
             Light(vector<double> &aAmbientLight, vector<double> &aDiffuseLight, vector<double> &aSpecularLight, const Vector3D &aLdVector = Vector3D::vector(0, 0, 0));
 
             virtual ~Light() = default;
@@ -69,7 +69,7 @@ namespace Lighting
 
             static Light totalAmbientAndInfDiffuse(Lights3D &lights, const Vector3D &normal);
 
-            static Color totalColor(Lights3D &lights, const Vector3D &normal, const Color &diffuseReflection, const Color &specularReflection, const double &reflectionCoeff, const Color &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz, Matrix &eyeMat);
+            static Color totalColor(Lights3D &lights, const Vector3D &normal, const ColorDouble &diffuseReflection, const ColorDouble &specularReflection, const double &reflectionCoeff, const ColorDouble &color, const int &x, const int &y, double &d, double &dx, double &dy, double Pz, Matrix &eyeMat);
 
             void calculateShadowMask(Figures3D figures);
     };

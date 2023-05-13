@@ -120,52 +120,9 @@ img::Color::Color(uint8_t r, uint8_t g, uint8_t b) :
 	blue(b), green(g), red(r)
 {
 }
-
-img::Color::Color(vector<double> &colorTuple) :
-    red(lround(colorTuple[0] * 255)), green(lround(colorTuple[1] * 255)), blue(lround(colorTuple[2] * 255))
-{
-}
-
 img::Color::~Color()
 {
 }
-
-img::Color img::Color::add(const img::Color &color1, const img::Color &color2)
-{
-    int r = (int) color1.red + (int) color2.red;
-    r = (r > 255) ? 255 : r;
-
-    int g = (int) color1.green + (int) color2.green;
-    g = (g > 255) ? 255 : g;
-
-    int b = (int) color1.blue + (int) color2.blue;
-    b = (b > 255) ? 255 : b;
-
-    vector<double> rgb = {(double) r/255, (double) g/255, (double) b/255};
-
-    return Color(rgb);
-}
-
-img::Color img::Color::multiply(const img::Color &color1, const img::Color &color2)
-{
-    double r = (double) color1.red * (double) color2.red / 65025;
-    double g = (double) color1.green * (double) color2.green / 65025;
-    double b = (double) color1.blue * (double) color2.blue / 65025;
-    vector<double> rgb = {r, g, b};
-
-    return Color(rgb);
-}
-
-img::Color img::Color::multiply(const img::Color &color, const double &factor)
-{
-    double r = (double) color.red * factor / 255;
-    double g = (double) color.green * factor / 255;
-    double b = (double) color.blue * factor / 255;
-    vector<double> rgb = {r, g, b};
-
-    return Color(rgb);
-}
-
 img::UnsupportedFileTypeException::UnsupportedFileTypeException(std::string const& msg) :
 	message(msg)
 {

@@ -9,7 +9,7 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
     int size = conf["General"]["size"].as_int_or_die();
 
     vector<double> backgroundColorTuple = conf["General"]["backgroundcolor"].as_double_tuple_or_die();
-    Color backgroundColor = Color(backgroundColorTuple);
+    ColorDouble backgroundColor = ColorDouble(backgroundColorTuple);
 
     int nrFigures = conf["General"]["nrFigures"].as_int_or_die();
 
@@ -17,7 +17,7 @@ EasyImage Figure3D::parseIni(const Configuration &conf, const bool ZBuffering)
     Vector3D eyePoint = Vector3D::point(eyeCoord[0], eyeCoord[1], eyeCoord[2]);
 
     // Figures
-    Figures3D figures = Figure::parseFigures(conf, true, false);
+    Figures3D figures = Figure::parseFigures(conf, false, false);
 
     // Eye Point Transformation and Projection
     Transformations::applyTransformation(figures, Transformations::eyePointTrans(eyePoint));
@@ -50,23 +50,23 @@ Figure3D::Figure::Figure()
 {
     points = {};
     faces = {};
-    ambientReflection = Color();
-    diffuseReflection = Color();
-    specularReflection = Color();
+    ambientReflection = ColorDouble();
+    diffuseReflection = ColorDouble();
+    specularReflection = ColorDouble();
     reflectionCoefficient = 0;
 }
 
-Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection)
+Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, ColorDouble &aAmbientReflection)
 {
     points = aPoints;
     faces = aFaces;
     ambientReflection = aAmbientReflection;
-    diffuseReflection = Color();
-    specularReflection = Color();
+    diffuseReflection = ColorDouble();
+    specularReflection = ColorDouble();
     reflectionCoefficient = 0;
 }
 
-Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection, Color &aDiffuseReflection, Color &aSpecularReflection, double aReflectionCoefficient)
+Figure3D::Figure::Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, ColorDouble &aAmbientReflection, ColorDouble &aDiffuseReflection, ColorDouble &aSpecularReflection, double aReflectionCoefficient)
 {
     points = aPoints;
     faces = aFaces;
@@ -850,7 +850,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
     if (!lighted)
     {
         vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
-        colorCoeffs = make_tuple(Color(colorTuple), Color(), Color(), 0);
+        colorCoeffs = make_tuple(ColorDouble(colorTuple), ColorDouble(), ColorDouble(), 0);
     }
     else
     {
@@ -858,7 +858,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         vector<double> diffuseLightTuple = conf[figName]["diffuseReflection"].as_double_tuple_or_default({0, 0, 0});
         vector<double> specularLightTuple = conf[figName]["specularReflection"].as_double_tuple_or_default({0, 0, 0});
         double reflectionCoeff = conf[figName]["reflectionCoefficient"].as_double_or_default(0);
-        colorCoeffs = make_tuple(Color(ambientLightTuple), Color(diffuseLightTuple), Color(specularLightTuple), reflectionCoeff);
+        colorCoeffs = make_tuple(ColorDouble(ambientLightTuple), ColorDouble(diffuseLightTuple), ColorDouble(specularLightTuple), reflectionCoeff);
     }
 
 

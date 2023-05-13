@@ -4,6 +4,7 @@
 
 #include "../utils/ini_configuration.h"
 #include "../utils/easy_image.h"
+#include "../utils/ColorDouble.h"
 #include "../utils/vector3d.h"
 #include "../LSystem2D/LSystem2D.h"
 #include "../ZBuffering/ZBuffer.h"
@@ -46,22 +47,22 @@ namespace Figure3D
 
     class Figure;
     typedef list<Figure> Figures3D;
-    typedef tuple<Color, Color, Color, double> reflectionCoeffs;
+    typedef tuple<ColorDouble, ColorDouble, ColorDouble, double> reflectionCoeffs;
 
     class Figure
     {
         public:
             vector<Vector3D> points;
             vector<Face> faces;
-            Color ambientReflection;
-            Color diffuseReflection;
-            Color specularReflection;
+            ColorDouble ambientReflection;
+            ColorDouble diffuseReflection;
+            ColorDouble specularReflection;
             double reflectionCoefficient;
 
             // Figure constructors
             Figure();
-            Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection); // Figure with 1 color
-            Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, Color &aAmbientReflection,Color &aDiffuseReflection, Color &aSpecularReflection, double aReflectionCoefficient);
+            Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, ColorDouble &aAmbientReflection); // Figure with 1 ColorDouble
+            Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, ColorDouble &aAmbientReflection,ColorDouble &aDiffuseReflection, ColorDouble &aSpecularReflection, double aReflectionCoefficient);
             Figure(vector<Vector3D> &aPoints, vector<Face> &aFaces, reflectionCoeffs &tuple);
 
             // Apply transformation matrix to figure
