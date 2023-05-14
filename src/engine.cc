@@ -37,6 +37,11 @@ EasyImage generate_image(const Configuration &conf)
     {
         return ZBuffering::parseIni(conf, true);
     }
+    else
+    {
+        std::cerr << "Error: Type wasn't recognized." << std::endl;
+        return {};
+    }
 }
 
 int main(int argc, char const* argv[])

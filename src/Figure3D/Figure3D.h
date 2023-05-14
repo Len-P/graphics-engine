@@ -9,6 +9,7 @@
 #include "../LSystem2D/LSystem2D.h"
 #include "../ZBuffering/ZBuffer.h"
 #include "../Fractal3D/Fractal3D.h"
+#include "../Texture/Texture.h"
 #include <list>
 #include <cmath>
 #include <set>
@@ -58,6 +59,9 @@ namespace Figure3D
             ColorDouble diffuseReflection;
             ColorDouble specularReflection;
             double reflectionCoefficient;
+
+            Texture texture;
+            bool textured = false;
 
             // Figure constructors
             Figure();

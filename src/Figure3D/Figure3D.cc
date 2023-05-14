@@ -847,6 +847,13 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
     // Figure color
     reflectionCoeffs colorCoeffs;
 
+    string textureFile;
+    if (conf[figName]["texture"].as_string_if_exists(textureFile))
+    {
+        figure.texture = Texture(textureFile);
+        figure.textured = true;
+    }
+
     if (!lighted)
     {
         vector<double> colorTuple = conf[figName]["color"].as_double_tuple_or_die();
