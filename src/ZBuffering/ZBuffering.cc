@@ -21,6 +21,8 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     Figures3D figures = Figure::parseFigures(conf, true, lighted);
 
     // Calculate shadow masks if applicable
+    bool shadowing = conf["General"]["shadowEnabled"].as_int_or_default(false);
+
     for (auto &light : lights)
     {
         light.calculateShadowMask(figures);
@@ -31,10 +33,10 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     Lines2D lines = Transformations::doProjection(figures);
 
     // Draw Image
-    return draw_zbuf_figures(figures, lines, size, backgroundColor, lights, eyeMat);
+    return draw_zbuf_figures(figures, lines, size, backgroundColor, lights, eyeMat, shadowing);
 }
 
-EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const ColorDouble &backgroundColor, Lights3D &lights, Matrix &eyeMat)
+EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines, const int size, const ColorDouble &backgroundColor, Lights3D &lights, Matrix &eyeMat, const bool &shadowing)
 {
     double x_min = numeric_limits<double>::infinity();
     double y_min = numeric_limits<double>::infinity();
@@ -80,14 +82,14 @@ EasyImage ZBuffering::draw_zbuf_figures(Figures3D &figures, const Lines2D &lines
             Vector3D B = fig.points[face.pointIndexes[1]];
             Vector3D C = fig.points[face.pointIndexes[2]];
 
-            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.ambientReflection, fig.diffuseReflection, fig.specularReflection, fig.reflectionCoefficient, lights, eyeMat);
+            draw_zbuf_triangle(buffer, image, A, B, C, d, dx, dy, fig.ambientReflection, fig.diffuseReflection, fig.specularReflection, fig.reflectionCoefficient, lights, eyeMat, shadowing);
         }
     }
 
     return image;
 }
 
-void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const ColorDouble &ambientReflection, const ColorDouble &diffuseReflection, const ColorDouble &specularReflection, const double reflectionCoeff, Lights3D &lights, Matrix &eyeMat)
+void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vector3D &A, const Vector3D &B, const Vector3D &C, double d, double dx, double dy, const ColorDouble &ambientReflection, const ColorDouble &diffuseReflection, const ColorDouble &specularReflection, const double reflectionCoeff, Lights3D &lights, Matrix &eyeMat, const bool &shadowing)
 {
     Point2D A_2D = Point2D(-d * A.x / A.z + dx, -d * A.y / A.z + dy);
     Point2D B_2D = Point2D(-d * B.x / B.z + dx, -d * B.y / B.z + dy);
@@ -100,6 +102,7 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
     Vector3D w = Vector3D::cross(u, v);
 
     double k = w.x * A.x + w.y * A.y + w.z * A.z;
+    if (k > 0) {return;} // Backface culling
     double dzdx = w.x / (-d * k);
     double dzdy = w.y / (-d * k);
 
@@ -141,6 +144,11 @@ void ZBuffering::draw_zbuf_triangle(ZBuffer &zbuf, EasyImage &image, const Vecto
         for (int i = xL; i < xR + 1; i ++)
         {
             double z = (1.0001 * G.z) + (i - G.x) * dzdx + (yI - G.y) * dzdy;
+
+            if (shadowing)
+            {
+                z = G.z + (i - G.x) * dzdx + (yI - G.y) * dzdy;
+            }
 
             if (z < zbuf[i][yI])
             {

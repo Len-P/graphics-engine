@@ -30,7 +30,7 @@ X: Niet werkend of niet geïmplementeerd
 |   | Diffuus licht (oneindig)  | V      |
 |   | Diffuus licht (puntbron)  | V      |
 |   | Speculair licht           | V      |
-| 8 | Schaduw                   | X       |
+| 8 | Schaduw                   | V      |
 |   | Texture mapping           |        |
 | 9 | Bollen en cylinders       |        |
 |   | UV-coordinaten            |        |
@@ -39,9 +39,7 @@ X: Niet werkend of niet geïmplementeerd
 Geïmplementeerde vorm van texture mapping: ...
 
 ## Gekende problemen
-Schaduwen werken niet correct, omdat converteren van kleuren van doubles naar ints tussen 0-255 zorgt voor een verlies van precisie. (niet 100% zeker of het probleem hier ligt)
-Er is echter van het begin gebruik gemaakt van doubles, pas wanneer de pixel wordt getekend stap ik over op integers.
-Ik heb geen idee wat het probleem is, want ik werk op dezelfde manier bij alle andere delen van de engine en daar vormt dit geen probleem.
+...
 ## Niet-gequoteerde functionaliteit
 ...
 

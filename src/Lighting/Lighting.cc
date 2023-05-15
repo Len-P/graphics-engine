@@ -152,16 +152,6 @@ namespace Lighting
         double Py = (dy - y) * Pz / d;
         Vector3D P = Vector3D::point(Px, Py, Pz);
 
-        if (x == 490 && y == 600)
-        {
-            int xkaka =5;
-        }
-
-        if (x == 350 && y == 600)
-        {
-            int xkakdfa =5;
-        }
-
         for (const auto &light : lights)
         {
             if (!light.inf)
@@ -216,11 +206,7 @@ namespace Lighting
 
                         double Zinv = alphaY * ZinvE + (1 - alphaY) * ZinvF;
 
-                        // If difference between ZBuffer and shadow mask is large enough, the light is being obstructed
-                        if (abs(Zinv - 1/P_light.z) > 0.0001)
-                        {
-                            lit = false;
-                        }
+                        lit = (1/P_light.z - Zinv) < 0.0001;
                     }
 
                     if (light.diffuse && lit)
@@ -369,7 +355,7 @@ namespace Lighting
 
                         for (int i = xL; i < xR + 1; i ++)
                         {
-                            double z = (1.0001 * G.z) + (i - G.x) * dzdx + (yI - G.y) * dzdy;
+                            double z = G.z + (i - G.x) * dzdx + (yI - G.y) * dzdy;
 
                             if (z < this->shadowMask[i][yI])
                             {
