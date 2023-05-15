@@ -21,7 +21,7 @@ EasyImage ZBuffering::parseIni(const Configuration &conf, const bool lighted)
     Figures3D figures = Figure::parseFigures(conf, true, lighted);
 
     // Calculate shadow masks if applicable
-    bool shadowing = conf["General"]["shadowEnabled"].as_int_or_default(false);
+    bool shadowing = conf["General"]["shadowEnabled"].as_bool_or_default(false);
 
     for (auto &light : lights)
     {
