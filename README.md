@@ -10,7 +10,7 @@ X: Niet werkend of niet geïmplementeerd
 |---|---------------------------|--------|
 | 1 | 2D L-systemen             | V      |
 |   | Met haakjes               | V      |
-|   | Stochastisch              |        |
+|   | Stochastisch              | X      |
 | 2 | Transformaties            | V      |
 |   | Eye-point                 | V      |
 |   | Projectie                 | V      |
@@ -25,16 +25,16 @@ X: Niet werkend of niet geïmplementeerd
 | 6 | 3D fractalen              | V      |
 |   | BuckyBall                 | V      |
 |   | Mengerspons               | V      |
-|   | View Frustum              |        |
+|   | View Frustum              | X      |
 | 7 | Ambient licht             | V      |
 |   | Diffuus licht (oneindig)  | V      |
 |   | Diffuus licht (puntbron)  | V      |
 |   | Speculair licht           | V      |
 | 8 | Schaduw                   | V      |
-|   | Texture mapping           |        |
-| 9 | Bollen en cylinders       |        |
-|   | UV-coordinaten            |        |
-|   | Cube mapping              |        |
+|   | Texture mapping           | X      |
+| 9 | Bollen en cylinders       | V      |
+|   | UV-coordinaten            | X      |
+|   | Cube mapping              | X      |
 
 Geïmplementeerde vorm van texture mapping: ...
 

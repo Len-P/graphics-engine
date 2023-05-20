@@ -154,12 +154,70 @@ void Figure3D::Figure::splitLine3(Vector3D &A, Vector3D &B)
 {
     Vector3D AB = B - A;
 
-    // Points inbetween each line that split the line in 3
+    // Points in between each line that split the line in 3
     Vector3D pointAB1 = A + AB/3;
     Vector3D pointAB2 = A + 2*AB/3;
 
     points.emplace_back(pointAB1);
     points.emplace_back(pointAB2);
+}
+
+void Figure3D::Figure::generateThickFigure(Figures3D &figures, const double r, const int n, const int m)
+{
+    reflectionCoeffs colors = make_tuple(ambientReflection, diffuseReflection, specularReflection, reflectionCoefficient);
+
+    for (const auto &point : points)
+    {
+        Figure sphere = createSphere(r, m, colors);
+
+        Matrix translationMatrix = Transformations::translate(point - Vector3D::point(0, 0, 0));
+        sphere.applyTransformation(translationMatrix);
+
+        figures.emplace_back(sphere);
+    }
+
+    for (const auto &face : faces)
+    {
+        for (int i = 0; i < face.pointIndexes.size(); i++)
+        {
+            Vector3D p1 = points[face.pointIndexes[i]];
+            Vector3D p2;
+
+            if (i == face.pointIndexes.size() - 1)
+            {
+                p2 = points[face.pointIndexes[0]];
+            }
+            else
+            {
+                p2 = points[face.pointIndexes[i + 1]];
+            }
+
+            Vector3D p1p2 = p2 - p1;
+
+            double h = (double) p1p2.length() / (double) r;
+            Figure cylinder = createCylinder(h, n, colors, false);
+
+            Matrix scale = Transformations::scaleFigure(r);
+            cylinder.applyTransformation(scale);
+
+            Vector3D Pr = Vector3D::point(0, 0, 0) + p1p2;
+
+            double rShadowed; // Because r is already being used in this function
+            double phi;
+            double theta;
+
+            Transformations::toPolar(Pr, rShadowed, theta, phi);
+            Matrix rotateY = Transformations::rotateY(phi);
+            Matrix rotateZ = Transformations::rotateZ(theta);
+            Matrix translate = Transformations::translate(p1);
+
+            cylinder.applyTransformation(rotateY);
+            cylinder.applyTransformation(rotateZ);
+            cylinder.applyTransformation(translate);
+
+            figures.emplace_back(cylinder);
+        }
+    }
 }
 
 // ?=========================================== Static Methods ===========================================? //
@@ -171,14 +229,24 @@ Figure3D::Figures3D Figure3D::Figure::parseFigures(const Configuration &conf, co
     for (int i = 0; i < nrFigures; i++)
     {
         string figName = "Figure" + to_string(i);
-
-        Figure figure = Figure::generateFigure(conf, figName, triangulate, lighted);
-
-        // Fractals or normal functionality
         string figType = conf[figName]["type"].as_string_or_die();
         int nrIter = conf[figName]["nrIterations"].as_int_or_default(0);
 
-        if (nrIter > 0 && figType.substr(0, 7) == "Fractal")
+        bool fractal = nrIter > 0 && figType.substr(0, 7) == "Fractal";
+        bool thickFig = figType.substr(0, 5) == "Thick";
+
+        Figure figure;
+        if (!thickFig)
+        {
+            figure = Figure::generateFigure(conf, figName, triangulate, lighted);
+        }
+        else
+        {
+            figure = Figure::generateFigure(conf, figName, false, lighted);
+        }
+
+        // Fractals or normal functionality
+        if (fractal)
         {
             double fractalScale = conf[figName]["fractalScale"].as_double_or_default(1);
             Fractal3D::generateFractal(figure, figures, nrIter, fractalScale);
@@ -186,6 +254,21 @@ Figure3D::Figures3D Figure3D::Figure::parseFigures(const Configuration &conf, co
         else if (figType == "MengerSponge")
         {
             Figure3D::Figure::createMengerSponge(figure, figures, nrIter, 1);
+        }
+        else if (thickFig)
+        {
+            int m = conf[figName]["m"].as_int_or_die();
+            int n = conf[figName]["n"].as_int_or_die();
+            double radius = conf[figName]["radius"].as_double_or_die();
+            figure.generateThickFigure(figures, radius, n, m);
+
+            if (triangulate)
+            {
+                for (auto &fig : figures)
+                {
+                    fig.triangulate();
+                }
+            }
         }
         else
         {
@@ -404,7 +487,7 @@ Figure3D::Figure Figure3D::Figure::createCone(const double h, const int n, refle
     return {points, faces, colorCoeffs};
 }
 
-Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, reflectionCoeffs &colorCoeffs)
+Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, reflectionCoeffs &colorCoeffs, bool genTandB)
 {
     vector<Vector3D> points;
     vector<Face> faces;
@@ -430,15 +513,18 @@ Figure3D::Figure Figure3D::Figure::createCylinder(const double h, const int n, r
     }
 
     // Bottom and top faces
-    vector<int> bottomFaceIndexes;
-    vector<int> topFaceIndexes;
-    for(int i = 0; i < n; i++)
+    if (genTandB)
     {
-        bottomFaceIndexes.emplace_back(i);
-        topFaceIndexes.emplace_back(i + n);
+        vector<int> bottomFaceIndexes;
+        vector<int> topFaceIndexes;
+        for(int i = 0; i < n; i++)
+        {
+            bottomFaceIndexes.emplace_back(i);
+            topFaceIndexes.emplace_back(i + n);
+        }
+        faces.emplace_back(bottomFaceIndexes);
+        faces.emplace_back(topFaceIndexes);
     }
-    faces.emplace_back(bottomFaceIndexes);
-    faces.emplace_back(topFaceIndexes);
 
     return {points, faces, colorCoeffs};
 }
@@ -506,15 +592,6 @@ Figure3D::Figure Figure3D::Figure::createBuckyBall(reflectionCoeffs &colorCoeffs
 
     // Erase original icosa points (important for fractal functionality)
     icosa.points.erase(icosa.points.begin(), icosa.points.begin() + oldPointSize);
-
-    //! /$$$$$$$                                        /$$             /$$                                   /$$               /$$$           /$$          /$$$
-    //!| $$__  $$                                      | $$            | $$                                  | $$              /$$_/          | $$         |_  $$
-    //!| $$  \ $$  /$$$$$$        /$$$$$$$   /$$$$$$  /$$$$$$         /$$$$$$    /$$$$$$  /$$   /$$  /$$$$$$$| $$$$$$$        /$$/    /$$$$$$ | $$  /$$$$$$$ \  $$
-    //!| $$  | $$ /$$__  $$      | $$__  $$ /$$__  $$|_  $$_/        |_  $$_/   /$$__  $$| $$  | $$ /$$_____/| $$__  $$      | $$    /$$__  $$| $$ /$$_____/  | $$
-    //!| $$  | $$| $$  \ $$      | $$  \ $$| $$  \ $$  | $$            | $$    | $$  \ $$| $$  | $$| $$      | $$  \ $$      | $$   | $$  \ $$| $$|  $$$$$$   | $$
-    //!| $$  | $$| $$  | $$      | $$  | $$| $$  | $$  | $$ /$$        | $$ /$$| $$  | $$| $$  | $$| $$      | $$  | $$      |  $$  | $$  | $$| $$ \____  $$  /$$/
-    //!| $$$$$$$/|  $$$$$$/      | $$  | $$|  $$$$$$/  |  $$$$/        |  $$$$/|  $$$$$$/|  $$$$$$/|  $$$$$$$| $$  | $$       \  $$$| $$$$$$$/| $$ /$$$$$$$//$$$/
-    //!|_______/  \______/       |__/  |__/ \______/    \___/           \___/   \______/  \______/  \_______/|__/  |__/        \___/| $$____/ |__/|_______/|___/
 
     // Pool contains all unique hexagon points with index
     map<Vector3D, int> pool;
@@ -870,7 +947,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
 
 
     // Check figType and generate correct figure
-    if (figType == "LineDrawing")
+    if (figType == "LineDrawing" || figType == "ThickLineDrawing")
     {
         // Lines and points
         int nrPoints = conf[figName]["nrPoints"].as_int_or_die();
@@ -890,30 +967,30 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
             faces.emplace_back(conf[figName]["line" + to_string(n)].as_int_tuple_or_die());
         }
 
-        figure = Figure(points, faces, get<0>(colorCoeffs));
+        figure = Figure(points, faces, colorCoeffs);
     }
 
-    else if (figType == "Cube" || figType == "FractalCube" || figType == "MengerSponge")
+    else if (figType == "Cube" || figType == "FractalCube" || figType == "MengerSponge" || figType == "ThickCube")
     {
         figure = Figure::createCube(colorCoeffs);
     }
 
-    else if (figType == "Tetrahedron" || figType == "FractalTetrahedron")
+    else if (figType == "Tetrahedron" || figType == "FractalTetrahedron" || figType == "ThickTetrahedron")
     {
         figure = Figure::createTetrahedron(colorCoeffs);
     }
 
-    else if (figType == "Octahedron" || figType == "FractalOctahedron")
+    else if (figType == "Octahedron" || figType == "FractalOctahedron" || figType == "ThickOctahedron")
     {
         figure = Figure::createOctahedron(colorCoeffs);
     }
 
-    else if (figType == "Icosahedron" || figType == "FractalIcosahedron")
+    else if (figType == "Icosahedron" || figType == "FractalIcosahedron" || figType == "ThickIcosahedron")
     {
         figure = Figure::createIcosahedron(colorCoeffs);
     }
 
-    else if (figType == "Dodecahedron" || figType == "FractalDodecahedron")
+    else if (figType == "Dodecahedron" || figType == "FractalDodecahedron" || figType == "ThickDodecahedron")
     {
         figure = Figure::createDodecahedron(colorCoeffs);
     }
@@ -948,7 +1025,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         figure = Figure::createTorus(r, R, n, m, colorCoeffs);
     }
 
-    else if (figType == "3DLSystem")
+    else if (figType == "3DLSystem" || figType == "Thick3DLSystem")
     {
         string inputFile = conf[figName]["inputfile"].as_string_or_die();
 
@@ -961,7 +1038,7 @@ Figure3D::Figure Figure3D::Figure::generateFigure(const Configuration &conf, con
         figure = Figure::LSystem3DToFigure(l_system, colorCoeffs);
     }
 
-    else if (figType == "BuckyBall" || figType == "FractalBuckyBall")
+    else if (figType == "BuckyBall" || figType == "FractalBuckyBall" || figType == "ThickBuckyBall")
     {
         figure = Figure::createBuckyBall(colorCoeffs);
     }

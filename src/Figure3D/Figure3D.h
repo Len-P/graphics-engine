@@ -81,6 +81,9 @@ namespace Figure3D
             // Split a line in 3 using 2 points, and add those 2 points to the points vector of the figure
             void splitLine3(Vector3D &A, Vector3D &B);
 
+            // Turn points into spheres and lines into cylinders, add these figures to the list
+            void generateThickFigure(Figures3D &figures, const double r, const int n, const int m);
+
             // ?============== Static Methods ==============? //
             static Figures3D parseFigures(const Configuration &conf, const bool &triangulate, const bool &lighted);
 
@@ -91,7 +94,7 @@ namespace Figure3D
             static Figure createDodecahedron(reflectionCoeffs &colorCoeffs);
             static Figure createSphere(const double r, const int n, reflectionCoeffs &colorCoeffs);
             static Figure createCone(const double h, const int n, reflectionCoeffs &colorCoeffs);
-            static Figure createCylinder(const double h, const int n, reflectionCoeffs &colorCoeffs);
+            static Figure createCylinder(const double h, const int n, reflectionCoeffs &colorCoeffs, bool genTandB = true);
             static Figure createTorus(const double r, const double R, const int n, const int m, reflectionCoeffs &colorCoeffs);
             static Figure createBuckyBall(reflectionCoeffs &colorCoeffs);
             static void createMengerSponge(Figure &fig, Figures3D &fractal, const int nrIter, const int iterCounter);
