@@ -1,6 +1,9 @@
 # Graphics Engine
 
-Welcome to the Graphics Engine repository! This project is a C++ graphics engine developed for a Computer Graphics course. It provides various features for rendering 2D and 3D scenes, including transformations, geometric primitives, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
+This project is a C++ graphics engine developed for a Computer Graphics course. It provides various features for rendering 2D and 3D scenes, including transformations, geometric primitives, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
+
+## Grade
+19/20
 
 ## Features
 
