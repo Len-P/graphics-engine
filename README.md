@@ -1,6 +1,6 @@
 # Graphics Engine
 
-This project is a C++ graphics engine developed for the Computer Graphics course at the university of Antwerp. (Grade: 19/20) It provides various features for rendering 2D and 3D scenes, including transformations, geometry, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
+This project is a C++ graphics engine developed for the Computer Graphics course at the university of Antwerp. **(Grade: 19/20)** It provides various features for rendering 2D and 3D scenes, including transformations, geometry, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
 
 ## Features
 
