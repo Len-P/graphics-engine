@@ -1,48 +1,43 @@
-## Gequoteerde functionaliteit
+# Graphics Engine
 
-V: Werkend  
--: Deels werkend met gekende problemen (onderaan beschreven)  
-X: Niet werkend of niet geïmplementeerd  
-(blanco): TODO
+Welcome to the Graphics Engine repository! This project is a C++ graphics engine developed for a Computer Graphics course. It provides various features for rendering 2D and 3D scenes, including transformations, geometric primitives, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
 
+## Features
 
-|   | Functionaliteit      | Status |
-|---|---------------------------|--------|
-| 1 | 2D L-systemen             | V      |
-|   | Met haakjes               | V      |
-|   | Stochastisch              | X      |
-| 2 | Transformaties            | V      |
-|   | Eye-point                 | V      |
-|   | Projectie                 | V      |
-| 3 | Platonische Lichamen      | V      |
-|   | Kegel en cylinder         | V      |
-|   | Bol                       | V      |
-|   | Torus                     | V      |
-|   | 3D L-systemen             | V      |
-| 4 | Z-buffering (lijnen)      | V      |
-| 5 | Triangulatie              | V      |
-|   | Z-buffering (driehoeken)  | V      |
-| 6 | 3D fractalen              | V      |
-|   | BuckyBall                 | V      |
-|   | Mengerspons               | V      |
-|   | View Frustum              | X      |
-| 7 | Ambient licht             | V      |
-|   | Diffuus licht (oneindig)  | V      |
-|   | Diffuus licht (puntbron)  | V      |
-|   | Speculair licht           | V      |
-| 8 | Schaduw                   | V      |
-|   | Texture mapping           | X      |
-| 9 | Bollen en cylinders       | V      |
-|   | UV-coordinaten            | X      |
-|   | Cube mapping              | X      |
+- **2D L-Systems**
+  - Supports L-Systems with brackets.
 
-Geïmplementeerde vorm van texture mapping: ...
+- **Transformations**
+  - Eye-point transformation
+  - Projection transformation
 
-## Gekende problemen
-...
-## Niet-gequoteerde functionaliteit
-...
+- **Platonic Solids**
+  - Cone and cylinder
+  - Sphere
+  - Torus
 
-## Extra functionaliteit, niet in de opgaves beschreven
-...
+- **3D L-Systems**
 
+- **Z-Buffering (Lines)**
+  - Z-buffering for line rendering
+
+- **Object Triangulation**
+  - Triangulation of objects (converting polygons to triangles)
+  - Z-buffering for triangles
+
+- **3D Fractals**
+  - BuckyBall fractal
+  - Menger sponge fractal
+
+- **Lighting**
+  - Ambient lighting
+  - Diffuse lighting (infinite)
+  - Diffuse lighting (point source)
+  - Specular lighting
+
+- **Shading**
+  - Support for shading techniques
+ 
+  ## Usage
+
+The ini directory contains ini files that will be used by the engine to generate .bmp images.
