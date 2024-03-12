@@ -1,36 +1,37 @@
 # Graphics Engine
 
-This project is a C++ graphics engine developed for a Computer Graphics course. It provides various features for rendering 2D and 3D scenes, including transformations, geometric primitives, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
-
-## Grade
-19/20
+This project is a C++ graphics engine developed for the Computer Graphics course at the university of Antwerp. (Grade: 19/20) It provides various features for rendering 2D and 3D scenes, including transformations, geometry, lighting models, shading, and more. Below is an overview of the features and functionalities included in this engine:
 
 ## Features
 
-- **2D L-Systems**
+- **2D Lindenmayer Systems**
   - Supports L-Systems with brackets.
 
 - **Transformations**
+  - Basic transformations (translation, rotation)
   - Eye-point transformation
   - Projection transformation
 
-- **Platonic Solids**
-  - Cone and cylinder
+- **3D Objects (wireframes and solids)**
+  - Platonic Solids
+  - Cone
+  - Cylinder
   - Sphere
   - Torus
 
-- **3D L-Systems**
+- **3D Lindenmayer Systems**
 
-- **Z-Buffering (Lines)**
-  - Z-buffering for line rendering
+- **Z-Buffering**
+  - Z-buffered wireframes
+  - Z-buffered triangles
 
-- **Object Triangulation**
-  - Triangulation of objects (converting polygons to triangles)
-  - Z-buffering for triangles
+- **Object Triangulation (converting polygons to triangles)**
 
 - **3D Fractals**
   - BuckyBall fractal
   - Menger sponge fractal
+
+- **3D Wireframes from Cylinders and Spheres**
 
 - **Lighting**
   - Ambient lighting
@@ -39,8 +40,7 @@ This project is a C++ graphics engine developed for a Computer Graphics course. 
   - Specular lighting
 
 - **Shading**
-  - Support for shading techniques
  
-  ## Usage
+## Usage
 
 The ini directory contains ini files that will be used by the engine to generate .bmp images.
